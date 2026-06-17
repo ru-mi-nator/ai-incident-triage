@@ -55,6 +55,40 @@ ai-incident-triage/
 - [Database Design](docs/database-design.md)
 - [API Design](docs/api-design.md)
 
+## Local PostgreSQL Setup
+
+Copy the example environment file:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+Start PostgreSQL:
+
+```powershell
+docker compose up -d
+```
+
+Check container status:
+
+```powershell
+docker compose ps
+```
+
+Stop PostgreSQL without deleting data:
+
+```powershell
+docker compose down
+```
+
+For a full database reset, stop PostgreSQL and delete the database volume:
+
+```powershell
+docker compose down -v
+```
+
+This command intentionally deletes the PostgreSQL volume and should only be used when a full local database reset is needed.
+
 ## Implementation Note
 
 Application code has not yet been generated in this repository. The current documentation defines the MVP scope, data model, API contracts, and intended user workflows.
