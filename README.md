@@ -6,10 +6,10 @@ AI Incident Triage Portal is a full-stack application that enables software supp
 
 - Planned incident intake for support engineers with application, environment, description, and optional error logs.
 - Designed AI-assisted triage that produces structured category, priority, probable root cause, and suggested resolution output.
-- Human-in-the-loop developer review with the ability to accept or override AI recommendations.
-- Separate persistence of original AI analysis and final human resolution decisions.
-- MVP incident lifecycle from `OPEN` to `IN_PROGRESS` to `RESOLVED`.
-- Role-based access for `SUPPORT_ENGINEER` and `DEVELOPER` users.
+- Planned human-in-the-loop developer review with the ability to accept or override AI recommendations.
+- Designed separate persistence of original AI analysis and final human resolution decisions.
+- Planned MVP incident lifecycle from `OPEN` to `IN_PROGRESS` to `RESOLVED`.
+- Designed role-based access for `SUPPORT_ENGINEER` and `DEVELOPER` users.
 
 ## Human-in-the-Loop AI Workflow
 
@@ -20,12 +20,15 @@ The platform is designed so AI recommendations support, but do not replace, deve
 - Java 17
 - Spring Boot
 - Spring Web
-- Spring Security and JWT
+- Spring Security
+- JWT authentication
 - Spring Data JPA
 - PostgreSQL
-- Spring AI with OpenAI
+- Spring AI
+- OpenAI
 - Angular
-- PrimeNG with Aura theme
+- PrimeNG
+- PrimeNG Aura theme
 - SCSS
 
 ## MVP Status

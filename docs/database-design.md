@@ -65,7 +65,7 @@ Seeded users support authentication and role-based authorization in the MVP.
 | Column | Type | Constraints | Notes |
 | --- | --- | --- | --- |
 | `id` | `BIGINT` | Primary key, auto-generated | Internal numeric identifier |
-| `name` | `VARCHAR(100)` | Nullable allowed by design unless implementation chooses otherwise | Display name |
+| `name` | `VARCHAR(100)` | Not null | Display name |
 | `username` | `VARCHAR(50)` | Unique, not null | Login identifier |
 | `password` | `VARCHAR(255)` | Not null | BCrypt hash |
 | `role` | `VARCHAR(30)` | Not null | `SUPPORT_ENGINEER` or `DEVELOPER` |
@@ -124,7 +124,7 @@ Rules:
 - `incident_id` references `incidents.id`.
 - `incident_id` is unique.
 - An AI analysis cannot exist without an incident.
-- Cascade deletion from an incident to its AI analysis is acceptable.
+- Cascade deletion from an incident to its AI analysis is mandatory.
 - Each incident can have at most one AI analysis.
 - AI analysis remains read-only after generation.
 

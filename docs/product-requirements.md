@@ -22,6 +22,22 @@ The platform follows a human-in-the-loop model: AI provides structured triage re
 
 The MVP is designed as a modular monolithic application with role-based access, incident management, synchronous AI analysis, developer review, and final resolution capture.
 
+### Planned Technology Stack
+
+- Java 17
+- Spring Boot
+- Spring Web
+- Spring Security
+- JWT authentication
+- Spring Data JPA
+- PostgreSQL
+- Spring AI
+- OpenAI
+- Angular
+- PrimeNG
+- PrimeNG Aura theme
+- SCSS
+
 ### In Scope
 
 | Area | MVP scope |
@@ -33,7 +49,7 @@ The MVP is designed as a modular monolithic application with role-based access, 
 | AI triage | Manual, synchronous AI analysis with structured output |
 | Developer review | Assigned developers accept or override AI recommendations |
 | Resolution | Final category, priority, actual root cause, and actual resolution |
-| Frontend | Angular UI with PrimeNG and Aura theme |
+| Frontend | Angular UI with PrimeNG, PrimeNG Aura theme, and SCSS |
 
 ### Outside MVP Scope
 
@@ -60,10 +76,10 @@ Users are planned to be seeded in the database for the MVP.
 
 | Role | Description |
 | --- | --- |
-| `SUPPORT_ENGINEER` | Creates incidents, triggers AI analysis for eligible own incidents, and tracks resolution outcomes. |
-| `DEVELOPER` | Assigns eligible incidents, reviews AI recommendations, and records final resolution details. |
+| `SUPPORT_ENGINEER` | Designed to create incidents, trigger AI analysis for eligible own incidents, and track resolution outcomes. |
+| `DEVELOPER` | Designed to assign eligible incidents, review AI recommendations, and record final resolution details. |
 
-### Support Engineer Capabilities
+### Planned Support Engineer Capabilities
 
 - Log in.
 - View all incidents.
@@ -76,7 +92,7 @@ Users are planned to be seeded in the database for the MVP.
 - Track assignment and resolution status.
 - View the final developer resolution.
 
-### Developer Capabilities
+### Planned Developer Capabilities
 
 - Log in.
 - View all incidents.
@@ -238,6 +254,29 @@ Planned screens:
 
 The MVP layout is designed with a clean top navigation bar, no sidebar, the app name on the left, and the logged-in user, role, and logout action on the right. Main content is centered. Support engineers see a `Create Incident` button; developers do not.
 
-The incident list is planned to use a PrimeNG table with pagination and badges for status, environment, and priority. Filters, search, and advanced sorting are future enhancements.
+The incident list is planned to use a PrimeNG table with pagination and badges for status, environment, and priority. Confirmed incident list fields are:
+
+- Incident ID
+- Title
+- Application
+- Environment
+- Status
+- Priority
+- Assigned developer
+- Created date
+
+Filters, search, and advanced sorting are future enhancements.
+
+The create incident screen is planned to include:
+
+- Title
+- Description
+- Application dropdown
+- Environment dropdown
+- Error logs textarea
+- Client-side validation
+- Redirect to the incident-details page after successful creation
 
 The incident details page is designed as a single page with three clearly separated sections: original incident details, AI analysis, and developer review and resolution. Tabs are outside the MVP scope.
+
+The UI should use clean PrimeNG panels, bordered sections, or surface containers rather than visually heavy card layouts everywhere.

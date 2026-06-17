@@ -103,6 +103,8 @@ POST /api/incidents
 
 Only `SUPPORT_ENGINEER` may call this endpoint.
 
+Successful response: HTTP `201 Created` with the combined incident-details response.
+
 Request:
 
 ```json
@@ -122,7 +124,11 @@ The backend automatically sets:
 - Created timestamp
 - Updated timestamp
 
-Response: updated combined incident response.
+Validation limits:
+
+- `title`: maximum 150 characters
+- `description`: maximum 2,000 characters
+- `errorLogs`: maximum 10,000 characters
 
 ### List Incidents
 
@@ -258,7 +264,13 @@ Rules:
 
 Dedicated request DTOs are used instead of exposing JPA entities to protect system-managed fields, prevent unintended updates, decouple API contracts from persistence models, support request-specific validation, and avoid circular relationship serialization.
 
-Response: updated combined incident response.
+Validation limits:
+
+- `title`: maximum 150 characters
+- `description`: maximum 2,000 characters
+- `errorLogs`: maximum 10,000 characters
+
+Successful response: HTTP `200 OK` with the updated combined incident-details response.
 
 ### Analyse Incident
 
@@ -275,6 +287,11 @@ Rules:
 - Only one analysis is allowed.
 - Resolved incidents cannot be analysed.
 - Return the updated combined incident response.
+
+AI response validation limits:
+
+- `probableRootCause`: maximum 2,000 characters
+- `suggestedResolution`: maximum 3,000 characters
 
 ### Assign Incident
 
@@ -321,6 +338,11 @@ Rules:
 - Set `resolvedAt`.
 - Return the updated combined incident response.
 
+Validation limits:
+
+- `actualRootCause`: maximum 2,000 characters
+- `actualResolution`: maximum 3,000 characters
+
 ## DTO Design
 
 The API is designed to use purpose-specific DTOs and must not expose JPA entities directly through REST endpoints.
@@ -337,6 +359,18 @@ The API is designed to use purpose-specific DTOs and must not expose JPA entitie
 | `AiAnalysisResponse` | Read-only AI triage output |
 | `MetadataResponse` | Enum metadata for frontend forms |
 | `ApiErrorResponse` | Consistent error response contract |
+
+Request and response DTOs should apply the confirmed validation limits:
+
+| Field | Limit |
+| --- | --- |
+| `title` | Maximum 150 characters |
+| `description` | Maximum 2,000 characters |
+| `errorLogs` | Maximum 10,000 characters |
+| `actualRootCause` | Maximum 2,000 characters |
+| `actualResolution` | Maximum 3,000 characters |
+| `probableRootCause` | Maximum 2,000 characters |
+| `suggestedResolution` | Maximum 3,000 characters |
 
 DTOs:
 
