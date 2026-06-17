@@ -1,0 +1,60 @@
+# Java and Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.log
+*.iml
+.mvn/wrapper/maven-wrapper.jar
+
+# IntelliJ IDEA
+.idea/
+out/
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Angular
+dist/
+.angular/
+coverage/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Local Spring configuration that may contain secrets
+application-local.properties
+application-local.yml
+application-local.yaml
+application-dev.properties
+application-dev.yml
+application-dev.yaml
+bootstrap-local.properties
+bootstrap-local.yml
+bootstrap-local.yaml
+
+# Logs
+logs/
+*.log.*
+
+# Windows and OS-generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+.Spotlight-V100
+.Trashes
+._*
