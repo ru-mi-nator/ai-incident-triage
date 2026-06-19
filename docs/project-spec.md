@@ -432,6 +432,7 @@ Response example:
 {
   "accessToken": "jwt-token",
   "tokenType": "Bearer",
+  "expiresIn": 3600,
   "user": {
     "id": 1,
     "name": "Support User",

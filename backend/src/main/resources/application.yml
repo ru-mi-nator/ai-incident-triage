@@ -18,3 +18,9 @@ spring:
 
   flyway:
     enabled: true
+
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+    issuer: ai-incident-triage
+    expiry-seconds: 3600

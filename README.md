@@ -104,4 +104,4 @@ Registration and user management are intentionally not part of the MVP. Only BCr
 
 ## Implementation Note
 
-The repository currently includes the Spring Boot backend foundation, local PostgreSQL Docker setup, Flyway schema and seeded demo users, JPA entities, and Spring Data repositories. Authentication, incident business services, REST controllers, AI integration, and the Angular frontend are not yet implemented.
+The repository currently includes the Spring Boot backend foundation, local PostgreSQL Docker setup, Flyway schema and seeded demo users, JPA entities, Spring Data repositories, and JWT authentication. Seeded database users can log in. Incident business services and controllers, AI integration, and the Angular frontend are not yet implemented.
