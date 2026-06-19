@@ -89,6 +89,19 @@ docker compose down -v
 
 This command intentionally deletes the PostgreSQL volume and should only be used when a full local database reset is needed.
 
+## Local demo credentials
+
+These credentials are for local/demo use only:
+
+| Role | Username | Password |
+| --- | --- | --- |
+| Support Engineer | `support1` | `Support@123` |
+| Support Engineer | `support2` | `Support@123` |
+| Developer | `developer1` | `Developer@123` |
+| Developer | `developer2` | `Developer@123` |
+
+Registration and user management are intentionally not part of the MVP. Only BCrypt password hashes are stored in PostgreSQL. These credentials must not be used for a real production deployment.
+
 ## Implementation Note
 
-Application code has not yet been generated in this repository. The current documentation defines the MVP scope, data model, API contracts, and intended user workflows.
+The repository currently includes the Spring Boot backend foundation, local PostgreSQL Docker setup, Flyway schema and seeded demo users, JPA entities, and Spring Data repositories. Authentication, incident business services, REST controllers, AI integration, and the Angular frontend are not yet implemented.
