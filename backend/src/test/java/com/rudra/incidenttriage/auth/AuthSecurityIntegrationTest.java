@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rudra.incidenttriage.domain.entity.User;
 import com.rudra.incidenttriage.domain.enums.UserRole;
+import com.rudra.incidenttriage.repository.IncidentRepository;
 import com.rudra.incidenttriage.repository.UserRepository;
 import com.rudra.incidenttriage.security.AuthenticatedUser;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,6 +66,9 @@ class AuthSecurityIntegrationTest {
 
 	@MockitoBean
 	private UserRepository userRepository;
+
+	@MockitoBean
+	private IncidentRepository incidentRepository;
 
 	@BeforeEach
 	void configureUsers() {

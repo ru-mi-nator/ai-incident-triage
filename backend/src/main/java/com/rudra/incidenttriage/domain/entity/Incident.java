@@ -1,6 +1,7 @@
 package com.rudra.incidenttriage.domain.entity;
 
 import java.time.Instant;
+import java.util.Objects;
 
 import com.rudra.incidenttriage.domain.enums.ApplicationName;
 import com.rudra.incidenttriage.domain.enums.Environment;
@@ -40,6 +41,25 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Incident {
+
+	public static Incident open(
+			String title,
+			String description,
+			ApplicationName applicationName,
+			Environment environment,
+			String errorLogs,
+			User createdBy
+	) {
+		Incident incident = new Incident();
+		incident.title = Objects.requireNonNull(title, "title must not be null");
+		incident.description = Objects.requireNonNull(description, "description must not be null");
+		incident.applicationName = Objects.requireNonNull(applicationName, "applicationName must not be null");
+		incident.environment = Objects.requireNonNull(environment, "environment must not be null");
+		incident.errorLogs = errorLogs;
+		incident.createdBy = Objects.requireNonNull(createdBy, "createdBy must not be null");
+		incident.status = IncidentStatus.OPEN;
+		return incident;
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
