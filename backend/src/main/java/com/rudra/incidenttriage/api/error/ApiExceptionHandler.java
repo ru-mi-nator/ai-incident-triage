@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.rudra.incidenttriage.incident.AuthenticatedUserNotFoundException;
 import com.rudra.incidenttriage.incident.IncidentCreationAccessDeniedException;
+import com.rudra.incidenttriage.incident.IncidentListValidationException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -99,6 +100,22 @@ public class ApiExceptionHandler {
 						"Request validation failed",
 						request.getRequestURI(),
 						fieldErrors
+				));
+	}
+
+	@ExceptionHandler(IncidentListValidationException.class)
+	public ResponseEntity<ValidationErrorResponse> handleIncidentListValidation(
+			IncidentListValidationException exception,
+			HttpServletRequest request
+	) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(new ValidationErrorResponse(
+						Instant.now(),
+						HttpStatus.BAD_REQUEST.value(),
+						"VALIDATION_FAILED",
+						"Request validation failed",
+						request.getRequestURI(),
+						exception.getFieldErrors()
 				));
 	}
 

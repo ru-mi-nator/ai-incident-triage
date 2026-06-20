@@ -140,14 +140,16 @@ GET /api/incidents?page=0&size=10&sort=createdAt,desc
 Requirements:
 
 - Both roles can view all incidents.
-- Use pagination.
-- Default page size is 10.
-- Maximum page size is 50.
-- Default sorting is newest first.
-- Response should contain summary objects rather than full incident details.
-- Display priority should use final priority when available.
-- Otherwise use AI-suggested priority.
-- Otherwise return `null`.
+- Defaults are `page=0`, `size=10`, and `sort=createdAt,desc`.
+- `page` must be at least `0`.
+- `size` must be between `1` and `50`.
+- Sort direction must be `asc` or `desc`.
+- Allowed sort fields are `id`, `createdAt`, `updatedAt`, `title`, `applicationName`, `environment`, and `status`.
+- Unknown fields, nested properties, and invalid directions return HTTP `400`, `VALIDATION_FAILED`, and `fieldErrors.sort`.
+- Invalid page or size values return HTTP `400`, `VALIDATION_FAILED`, and the corresponding field error.
+- Summary objects do not contain descriptions or error logs.
+- Display priority uses final priority when available, otherwise AI-suggested priority, otherwise `null`.
+- Display IDs use at least four digits of padding, such as `INC-0042`; IDs above 9999 are not truncated.
 
 Response:
 
@@ -162,16 +164,21 @@ Response:
       "environment": "PROD",
       "status": "OPEN",
       "priority": "HIGH",
-      "assignedDeveloperName": null,
-      "createdAt": "2026-06-17T10:30:00"
+      "assignedDeveloper": {
+        "id": 3,
+        "name": "Developer User",
+        "username": "developer1",
+        "role": "DEVELOPER"
+      },
+      "createdAt": "2026-06-21T10:30:00Z"
     }
   ],
   "page": 0,
   "size": 10,
-  "totalElements": 27,
-  "totalPages": 3,
+  "totalElements": 1,
+  "totalPages": 1,
   "first": true,
-  "last": false
+  "last": true
 }
 ```
 

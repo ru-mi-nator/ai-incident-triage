@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rudra.incidenttriage.domain.entity.Incident;
 import com.rudra.incidenttriage.domain.entity.User;
 import com.rudra.incidenttriage.domain.enums.UserRole;
+import com.rudra.incidenttriage.repository.AiAnalysisRepository;
 import com.rudra.incidenttriage.repository.IncidentRepository;
 import com.rudra.incidenttriage.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,6 +61,9 @@ class IncidentCreationIntegrationTest {
 
 	@MockitoBean
 	private IncidentRepository incidentRepository;
+
+	@MockitoBean
+	private AiAnalysisRepository aiAnalysisRepository;
 
 	private User supportUser;
 
