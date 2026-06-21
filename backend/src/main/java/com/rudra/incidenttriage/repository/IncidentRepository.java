@@ -24,12 +24,10 @@ public interface IncidentRepository extends JpaRepository<Incident, Long> {
 	Optional<Incident> findDetailsById(@Param("id") Long id);
 
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
-	@EntityGraph(attributePaths = {"createdBy", "assignedDeveloper"})
 	@Query("select incident from Incident incident where incident.id = :id")
 	Optional<Incident> findByIdForAssignment(@Param("id") Long id);
 
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
-	@EntityGraph(attributePaths = {"createdBy", "assignedDeveloper"})
 	@Query("select incident from Incident incident where incident.id = :id")
 	Optional<Incident> findByIdForAnalysis(@Param("id") Long id);
 

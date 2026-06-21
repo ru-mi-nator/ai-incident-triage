@@ -4,7 +4,7 @@
 
 The AI Incident Triage Portal API is designed as a REST API secured with JWT authentication. The MVP uses one access token, seeded users, and role-based authorization for support engineer and developer workflows.
 
-All endpoints are planned under the `/api` base path.
+Implemented and planned endpoints use the `/api` base path.
 
 ## Authentication
 
@@ -39,13 +39,13 @@ Response:
 }
 ```
 
-## Metadata
+## Metadata (Planned / Deferred)
 
-The metadata API prevents Angular from duplicating backend enum definitions.
+The metadata API is not implemented in the backend MVP. Its planned design prevents Angular from duplicating backend enum definitions.
 
 | Method | Endpoint | Auth required | Roles | Purpose |
 | --- | --- | --- | --- | --- |
-| `GET` | `/api/metadata` | Yes | `SUPPORT_ENGINEER`, `DEVELOPER` | Return backend enum values used by forms and filters |
+| `GET` | `/api/metadata` | Yes | `SUPPORT_ENGINEER`, `DEVELOPER` | Planned: return backend enum values used by forms and filters |
 
 Response:
 
@@ -91,7 +91,7 @@ Response:
 | `POST` | `/api/incidents` | Yes | `SUPPORT_ENGINEER` | Create a new incident |
 | `GET` | `/api/incidents?page=0&size=10&sort=createdAt,desc` | Yes | `SUPPORT_ENGINEER`, `DEVELOPER` | List incident summaries with pagination |
 | `GET` | `/api/incidents/{id}` | Yes | `SUPPORT_ENGINEER`, `DEVELOPER` | Get combined incident details |
-| `PUT` | `/api/incidents/{id}` | Yes | Creator `SUPPORT_ENGINEER` | Update eligible incident intake fields |
+| `PUT` | `/api/incidents/{id}` | Yes | Creator `SUPPORT_ENGINEER` | Planned/deferred: update eligible incident intake fields |
 | `POST` | `/api/incidents/{id}/analyze` | Yes | `SUPPORT_ENGINEER`, `DEVELOPER` subject to ownership and state rules | Trigger synchronous advisory AI analysis |
 | `POST` | `/api/incidents/{id}/assign-to-me` | Yes | `DEVELOPER` | Assign an open incident to the authenticated developer |
 | `POST` | `/api/incidents/{id}/resolve` | Yes | Assigned `DEVELOPER` | Resolve an assigned incident |
@@ -233,7 +233,9 @@ Response:
 }
 ```
 
-### Update Incident
+### Update Incident (Planned / Deferred)
+
+This endpoint is not implemented in the backend MVP. The following notes preserve its future API design.
 
 ```http
 PUT /api/incidents/{id}
@@ -389,12 +391,12 @@ The API is designed to use purpose-specific DTOs and must not expose JPA entitie
 | `LoginRequest` | Login credentials |
 | `LoginResponse` | JWT and authenticated user summary |
 | `CreateIncidentRequest` | Incident intake creation |
-| `UpdateIncidentRequest` | Editable incident intake fields |
+| `UpdateIncidentRequest` | Planned editable incident intake fields |
 | `ResolveIncidentRequest` | Final developer resolution fields |
 | `IncidentDetailsResponse` | Combined incident details view |
 | `IncidentSummaryResponse` | Paginated incident list item |
 | `AiAnalysisResponse` | Read-only AI triage output |
-| `MetadataResponse` | Enum metadata for frontend forms |
+| `MetadataResponse` | Planned enum metadata for frontend forms |
 | `ApiErrorResponse` | Consistent error response contract |
 
 Request and response DTOs should apply the confirmed validation limits:

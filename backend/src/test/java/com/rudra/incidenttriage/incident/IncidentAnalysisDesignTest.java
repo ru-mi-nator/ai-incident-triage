@@ -25,6 +25,7 @@ import com.rudra.incidenttriage.repository.UserRepository;
 import jakarta.persistence.LockModeType;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +47,7 @@ class IncidentAnalysisDesignTest {
 	}
 
 	@Test
-	void persistenceReloadUsesPessimisticWriteLock() throws Exception {
+	void persistenceReloadUsesDirectPessimisticWriteLock() throws Exception {
 		Method lockedLookup = IncidentRepository.class.getMethod(
 				"findByIdForAnalysis",
 				Long.class
@@ -54,6 +55,7 @@ class IncidentAnalysisDesignTest {
 
 		assertThat(lockedLookup.getAnnotation(Lock.class).value())
 				.isEqualTo(LockModeType.PESSIMISTIC_WRITE);
+		assertThat(lockedLookup.getAnnotation(EntityGraph.class)).isNull();
 	}
 
 	@Test

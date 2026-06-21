@@ -324,6 +324,20 @@ class IncidentAnalysisIntegrationTest {
 	}
 
 	@Test
+	void analysisCreatedDuringAiCallIsRecheckedAfterLockedLookup() throws Exception {
+		when(aiAnalysisRepository.existsByIncidentId(42L)).thenReturn(false, true);
+
+		analyze(42L, 1L, "support1", "SUPPORT_ENGINEER")
+				.andExpect(status().isConflict())
+				.andExpect(jsonPath("$.errorCode").value("AI_ANALYSIS_ALREADY_EXISTS"));
+
+		verify(aiClient).analyze(any());
+		verify(incidentRepository).findByIdForAnalysis(42L);
+		verify(aiAnalysisRepository, times(2)).existsByIncidentId(42L);
+		verify(aiAnalysisRepository, never()).saveAndFlush(any());
+	}
+
+	@Test
 	void concurrentUniqueConstraintFailureReturnsAlreadyExists() throws Exception {
 		ConstraintViolationException uniqueConstraintFailure = new ConstraintViolationException(
 				"duplicate analysis",

@@ -164,7 +164,7 @@ class IncidentServiceTest {
 	}
 
 	@Test
-	void rejectedAlreadyAssignedIncidentIsNotSaved() {
+	void assignmentRechecksExistingAssigneeAfterLockedLookup() {
 		User developer = mock(User.class);
 		when(developer.getRole()).thenReturn(UserRole.DEVELOPER);
 		when(userRepository.findById(3L)).thenReturn(Optional.of(developer));
@@ -180,7 +180,7 @@ class IncidentServiceTest {
 	}
 
 	@Test
-	void rejectedNonOpenIncidentIsNotSaved() {
+	void assignmentRechecksLifecycleAfterLockedLookup() {
 		User developer = mock(User.class);
 		when(developer.getRole()).thenReturn(UserRole.DEVELOPER);
 		when(userRepository.findById(3L)).thenReturn(Optional.of(developer));
@@ -197,12 +197,11 @@ class IncidentServiceTest {
 	}
 
 	@Test
-	void assignmentLookupUsesPessimisticWriteLockAndLoadsUsers() throws Exception {
+	void assignmentLookupUsesDirectPessimisticWriteLock() throws Exception {
 		Method method = IncidentRepository.class.getMethod("findByIdForAssignment", Long.class);
 
 		assertThat(method.getAnnotation(Lock.class).value()).isEqualTo(LockModeType.PESSIMISTIC_WRITE);
-		assertThat(method.getAnnotation(EntityGraph.class).attributePaths())
-				.containsExactlyInAnyOrder("createdBy", "assignedDeveloper");
+		assertThat(method.getAnnotation(EntityGraph.class)).isNull();
 	}
 
 	private CreateIncidentRequest validRequest() {

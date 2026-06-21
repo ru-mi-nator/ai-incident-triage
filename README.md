@@ -36,7 +36,7 @@ AI recommendations support, but do not replace, developer judgment. Synchronous 
 
 ## MVP Status
 
-Design phase. Implementation is currently in progress, and features described in this repository are planned or designed unless explicitly marked otherwise.
+The backend MVP is complete. It implements seven workflows: login, incident creation, incident listing, incident details, developer self-assignment, advisory AI analysis, and assigned-developer resolution. The Angular frontend and live OpenAI provider verification are still pending.
 
 ## Repository Structure
 
