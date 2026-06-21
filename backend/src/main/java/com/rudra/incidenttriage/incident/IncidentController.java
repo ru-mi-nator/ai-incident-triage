@@ -41,6 +41,16 @@ public class IncidentController {
 		return incidentService.getIncidentDetails(id);
 	}
 
+	@PostMapping("/{id}/assign-to-me")
+	@PreAuthorize("hasRole('DEVELOPER')")
+	public IncidentDetailsResponse assignIncidentToMe(
+			@PathVariable long id,
+			@AuthenticationPrincipal Jwt jwt
+	) {
+		Number userId = jwt.getClaim("userId");
+		return incidentService.assignIncidentToDeveloper(id, userId.longValue());
+	}
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	@PreAuthorize("hasRole('SUPPORT_ENGINEER')")

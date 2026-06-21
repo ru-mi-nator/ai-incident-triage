@@ -1,5 +1,6 @@
 package com.rudra.incidenttriage.incident;
 
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import com.rudra.incidenttriage.domain.entity.Incident;
 import com.rudra.incidenttriage.domain.entity.User;
 import com.rudra.incidenttriage.domain.enums.IncidentPriority;
+import com.rudra.incidenttriage.domain.enums.IncidentStatus;
 import com.rudra.incidenttriage.domain.enums.UserRole;
 import com.rudra.incidenttriage.incident.dto.CreateIncidentRequest;
 import com.rudra.incidenttriage.incident.dto.IncidentDetailsResponse;
@@ -101,6 +103,37 @@ public class IncidentService {
 
 		return IncidentDetailsResponse.from(
 				incident,
+				aiAnalysisRepository.findByIncidentId(incidentId).orElse(null)
+		);
+	}
+
+	@Transactional
+	public IncidentDetailsResponse assignIncidentToDeveloper(
+			long incidentId,
+			long authenticatedUserId
+	) {
+		User developer = userRepository.findById(authenticatedUserId)
+				.orElseThrow(AuthenticatedUserNotFoundException::new);
+
+		if (developer.getRole() != UserRole.DEVELOPER) {
+			throw new IncidentAssignmentAccessDeniedException();
+		}
+
+		Incident incident = incidentRepository.findByIdForAssignment(incidentId)
+				.orElseThrow(IncidentNotFoundException::new);
+
+		if (incident.getAssignedDeveloper() != null) {
+			throw new IncidentAlreadyAssignedException();
+		}
+		if (incident.getStatus() != IncidentStatus.OPEN) {
+			throw new IncidentNotOpenException();
+		}
+
+		incident.assignTo(developer, Instant.now());
+		Incident savedIncident = incidentRepository.save(incident);
+
+		return IncidentDetailsResponse.from(
+				savedIncident,
 				aiAnalysisRepository.findByIncidentId(incidentId).orElse(null)
 		);
 	}

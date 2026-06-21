@@ -8,9 +8,12 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.rudra.incidenttriage.incident.AuthenticatedUserNotFoundException;
+import com.rudra.incidenttriage.incident.IncidentAlreadyAssignedException;
+import com.rudra.incidenttriage.incident.IncidentAssignmentAccessDeniedException;
 import com.rudra.incidenttriage.incident.IncidentCreationAccessDeniedException;
 import com.rudra.incidenttriage.incident.IncidentListValidationException;
 import com.rudra.incidenttriage.incident.IncidentNotFoundException;
+import com.rudra.incidenttriage.incident.IncidentNotOpenException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,6 +86,21 @@ public class ApiExceptionHandler {
 				));
 	}
 
+	@ExceptionHandler(IncidentAssignmentAccessDeniedException.class)
+	public ResponseEntity<ApiErrorResponse> handleIncidentAssignmentAccessDenied(
+			IncidentAssignmentAccessDeniedException exception,
+			HttpServletRequest request
+	) {
+		return ResponseEntity.status(HttpStatus.FORBIDDEN)
+				.body(new ApiErrorResponse(
+						Instant.now(),
+						HttpStatus.FORBIDDEN.value(),
+						"ACCESS_DENIED",
+						"You do not have permission to perform this action",
+						request.getRequestURI()
+				));
+	}
+
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ValidationErrorResponse> handleValidationFailure(
 			MethodArgumentNotValidException exception,
@@ -131,6 +149,36 @@ public class ApiExceptionHandler {
 						HttpStatus.NOT_FOUND.value(),
 						"INCIDENT_NOT_FOUND",
 						"Incident not found",
+						request.getRequestURI()
+				));
+	}
+
+	@ExceptionHandler(IncidentAlreadyAssignedException.class)
+	public ResponseEntity<ApiErrorResponse> handleIncidentAlreadyAssigned(
+			IncidentAlreadyAssignedException exception,
+			HttpServletRequest request
+	) {
+		return ResponseEntity.status(HttpStatus.CONFLICT)
+				.body(new ApiErrorResponse(
+						Instant.now(),
+						HttpStatus.CONFLICT.value(),
+						"INCIDENT_ALREADY_ASSIGNED",
+						"Incident is already assigned",
+						request.getRequestURI()
+				));
+	}
+
+	@ExceptionHandler(IncidentNotOpenException.class)
+	public ResponseEntity<ApiErrorResponse> handleIncidentNotOpen(
+			IncidentNotOpenException exception,
+			HttpServletRequest request
+	) {
+		return ResponseEntity.status(HttpStatus.CONFLICT)
+				.body(new ApiErrorResponse(
+						Instant.now(),
+						HttpStatus.CONFLICT.value(),
+						"INCIDENT_NOT_OPEN",
+						"Only open incidents can be assigned",
 						request.getRequestURI()
 				));
 	}

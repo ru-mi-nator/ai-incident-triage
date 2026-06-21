@@ -61,6 +61,12 @@ public class Incident {
 		return incident;
 	}
 
+	public void assignTo(User developer, Instant assignedAt) {
+		this.assignedDeveloper = Objects.requireNonNull(developer, "developer must not be null");
+		this.assignedAt = Objects.requireNonNull(assignedAt, "assignedAt must not be null");
+		this.status = IncidentStatus.IN_PROGRESS;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

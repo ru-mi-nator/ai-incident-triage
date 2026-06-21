@@ -1,5 +1,7 @@
 package com.rudra.incidenttriage.domain.entity;
 
+import java.time.Instant;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
@@ -46,5 +48,26 @@ class IncidentFactoryTest {
 				null,
 				null
 		));
+	}
+
+	@Test
+	void assignToChangesDeveloperStatusAndTimestampTogether() {
+		User creator = new User();
+		User developer = new User();
+		Instant assignedAt = Instant.parse("2026-06-21T12:00:00Z");
+		Incident incident = Incident.open(
+				"Login API returning 500",
+				"Users are unable to log in.",
+				ApplicationName.AUTH_SERVICE,
+				Environment.PROD,
+				null,
+				creator
+		);
+
+		incident.assignTo(developer, assignedAt);
+
+		assertThat(incident.getAssignedDeveloper()).isSameAs(developer);
+		assertThat(incident.getAssignedAt()).isEqualTo(assignedAt);
+		assertThat(incident.getStatus()).isEqualTo(IncidentStatus.IN_PROGRESS);
 	}
 }

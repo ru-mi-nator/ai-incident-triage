@@ -310,12 +310,16 @@ No request body is required.
 Rules:
 
 - Only `DEVELOPER` may call it.
+- The assigned developer is always taken from the authenticated JWT user's database record.
 - The incident must be `OPEN`.
 - The incident must not already be assigned.
+- Assignment uses a pessimistic database write lock to prevent concurrent successful assignment.
 - Assign the authenticated developer.
 - Set `assignedAt`.
 - Change status to `IN_PROGRESS`.
-- Return the updated incident response.
+- Return the full updated incident-details response.
+- If already assigned, return HTTP `409`, `INCIDENT_ALREADY_ASSIGNED`, and `Incident is already assigned`.
+- If not open, return HTTP `409`, `INCIDENT_NOT_OPEN`, and `Only open incidents can be assigned`.
 
 ### Resolve Incident
 
@@ -424,6 +428,7 @@ Planned business errors:
 | --- | --- | --- |
 | `INCIDENT_NOT_FOUND` | `404` | Incident ID does not exist |
 | `INCIDENT_ALREADY_ASSIGNED` | `409` | Assignment requested for an already assigned incident |
+| `INCIDENT_NOT_OPEN` | `409` | Assignment requested for an incident that is not open |
 | `AI_ANALYSIS_ALREADY_EXISTS` | `409` | A second AI analysis was requested |
 | `INVALID_STATUS_TRANSITION` | `409` | Requested transition violates lifecycle rules |
 | `USER_NOT_AUTHORIZED` | `403` | Authenticated user cannot perform the action |

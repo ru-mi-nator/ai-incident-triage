@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Method;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -25,9 +26,12 @@ import com.rudra.incidenttriage.incident.dto.IncidentPageResponse;
 import com.rudra.incidenttriage.repository.AiAnalysisRepository;
 import com.rudra.incidenttriage.repository.IncidentRepository;
 import com.rudra.incidenttriage.repository.UserRepository;
+import jakarta.persistence.LockModeType;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.Lock;
 
 class IncidentServiceTest {
 
@@ -135,6 +139,70 @@ class IncidentServiceTest {
 				.isInstanceOf(IncidentNotFoundException.class);
 
 		verify(aiAnalysisRepository, never()).findByIncidentId(any());
+	}
+
+	@Test
+	void deletedAuthenticatedDeveloperFailsBeforeIncidentLookup() {
+		when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+		assertThatThrownBy(() -> incidentService.assignIncidentToDeveloper(42L, 99L))
+				.isInstanceOf(AuthenticatedUserNotFoundException.class);
+
+		verifyNoInteractions(incidentRepository);
+	}
+
+	@Test
+	void databaseRoleMismatchFailsBeforeIncidentLookup() {
+		User supportEngineer = mock(User.class);
+		when(supportEngineer.getRole()).thenReturn(UserRole.SUPPORT_ENGINEER);
+		when(userRepository.findById(1L)).thenReturn(Optional.of(supportEngineer));
+
+		assertThatThrownBy(() -> incidentService.assignIncidentToDeveloper(42L, 1L))
+				.isInstanceOf(IncidentAssignmentAccessDeniedException.class);
+
+		verifyNoInteractions(incidentRepository);
+	}
+
+	@Test
+	void rejectedAlreadyAssignedIncidentIsNotSaved() {
+		User developer = mock(User.class);
+		when(developer.getRole()).thenReturn(UserRole.DEVELOPER);
+		when(userRepository.findById(3L)).thenReturn(Optional.of(developer));
+		Incident incident = mock(Incident.class);
+		when(incident.getAssignedDeveloper()).thenReturn(developer);
+		when(incidentRepository.findByIdForAssignment(42L)).thenReturn(Optional.of(incident));
+
+		assertThatThrownBy(() -> incidentService.assignIncidentToDeveloper(42L, 3L))
+				.isInstanceOf(IncidentAlreadyAssignedException.class);
+
+		verify(incidentRepository, never()).save(any());
+		verify(aiAnalysisRepository, never()).findByIncidentId(any());
+	}
+
+	@Test
+	void rejectedNonOpenIncidentIsNotSaved() {
+		User developer = mock(User.class);
+		when(developer.getRole()).thenReturn(UserRole.DEVELOPER);
+		when(userRepository.findById(3L)).thenReturn(Optional.of(developer));
+		Incident incident = mock(Incident.class);
+		when(incident.getAssignedDeveloper()).thenReturn(null);
+		when(incident.getStatus()).thenReturn(IncidentStatus.RESOLVED);
+		when(incidentRepository.findByIdForAssignment(42L)).thenReturn(Optional.of(incident));
+
+		assertThatThrownBy(() -> incidentService.assignIncidentToDeveloper(42L, 3L))
+				.isInstanceOf(IncidentNotOpenException.class);
+
+		verify(incidentRepository, never()).save(any());
+		verify(aiAnalysisRepository, never()).findByIncidentId(any());
+	}
+
+	@Test
+	void assignmentLookupUsesPessimisticWriteLockAndLoadsUsers() throws Exception {
+		Method method = IncidentRepository.class.getMethod("findByIdForAssignment", Long.class);
+
+		assertThat(method.getAnnotation(Lock.class).value()).isEqualTo(LockModeType.PESSIMISTIC_WRITE);
+		assertThat(method.getAnnotation(EntityGraph.class).attributePaths())
+				.containsExactlyInAnyOrder("createdBy", "assignedDeveloper");
 	}
 
 	private CreateIncidentRequest validRequest() {
