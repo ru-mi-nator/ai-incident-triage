@@ -188,7 +188,7 @@ Response:
 GET /api/incidents/{id}
 ```
 
-Returns one combined response containing incident details, creator, assigned developer, AI analysis, developer review, and timestamps. The database ID remains numeric, while the UI can display it in a readable format such as `INC-0042`.
+Both `SUPPORT_ENGINEER` and `DEVELOPER` may retrieve any incident. The response contains the complete intake, safe user summaries, assignment and resolution state, timestamps, and optional AI analysis. Unknown IDs return HTTP `404` with `INCIDENT_NOT_FOUND`.
 
 Response:
 
@@ -202,7 +202,7 @@ Response:
   "environment": "PROD",
   "errorLogs": "NullPointerException at AuthenticationService.java:84",
   "status": "IN_PROGRESS",
-  "creator": {
+  "createdBy": {
     "id": 1,
     "name": "Support User",
     "username": "support1",
@@ -220,18 +220,16 @@ Response:
     "probableRootCause": "The authentication service is failing after a recent deployment.",
     "suggestedResolution": "Review the authentication deployment configuration and restart the service after correction.",
     "modelName": "openai-model",
-    "generatedAt": "2026-06-17T10:45:00"
+    "generatedAt": "2026-06-17T10:45:00Z"
   },
-  "developerReview": {
-    "finalCategory": null,
-    "finalPriority": null,
-    "actualRootCause": null,
-    "actualResolution": null
-  },
-  "createdAt": "2026-06-17T10:30:00",
-  "updatedAt": "2026-06-17T10:50:00",
-  "assignedAt": "2026-06-17T10:50:00",
-  "resolvedAt": null
+  "assignedAt": "2026-06-17T10:50:00Z",
+  "finalCategory": null,
+  "finalPriority": null,
+  "actualRootCause": null,
+  "actualResolution": null,
+  "resolvedAt": null,
+  "createdAt": "2026-06-17T10:30:00Z",
+  "updatedAt": "2026-06-17T10:50:00Z"
 }
 ```
 

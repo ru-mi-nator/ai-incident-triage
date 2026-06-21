@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,12 @@ public class IncidentController {
 			@RequestParam(defaultValue = "createdAt,desc") String sort
 	) {
 		return incidentService.listIncidents(page, size, sort);
+	}
+
+	@GetMapping("/{id}")
+	@PreAuthorize("hasAnyRole('SUPPORT_ENGINEER', 'DEVELOPER')")
+	public IncidentDetailsResponse getIncidentDetails(@PathVariable long id) {
+		return incidentService.getIncidentDetails(id);
 	}
 
 	@PostMapping

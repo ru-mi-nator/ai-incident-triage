@@ -105,13 +105,20 @@ class IncidentCreationIntegrationTest {
 				.andExpect(jsonPath("$.environment").value("PROD"))
 				.andExpect(jsonPath("$.errorLogs").value("NullPointerException"))
 				.andExpect(jsonPath("$.status").value("OPEN"))
-				.andExpect(jsonPath("$.creator.id").value(1))
-				.andExpect(jsonPath("$.creator.name").value("Support Engineer One"))
-				.andExpect(jsonPath("$.creator.username").value("support1"))
-				.andExpect(jsonPath("$.creator.role").value("SUPPORT_ENGINEER"))
+				.andExpect(jsonPath("$.createdBy.id").value(1))
+				.andExpect(jsonPath("$.createdBy.name").value("Support Engineer One"))
+				.andExpect(jsonPath("$.createdBy.username").value("support1"))
+				.andExpect(jsonPath("$.createdBy.role").value("SUPPORT_ENGINEER"))
 				.andExpect(jsonPath("$.assignedDeveloper").value((Object) null))
+				.andExpect(jsonPath("$.assignedAt").value((Object) null))
+				.andExpect(jsonPath("$.finalCategory").value((Object) null))
+				.andExpect(jsonPath("$.finalPriority").value((Object) null))
+				.andExpect(jsonPath("$.actualRootCause").value((Object) null))
+				.andExpect(jsonPath("$.actualResolution").value((Object) null))
+				.andExpect(jsonPath("$.resolvedAt").value((Object) null))
 				.andExpect(jsonPath("$.createdAt").value("2026-06-20T12:00:00Z"))
-				.andExpect(jsonPath("$.updatedAt").value("2026-06-20T12:00:00Z"));
+				.andExpect(jsonPath("$.updatedAt").value("2026-06-20T12:00:00Z"))
+				.andExpect(jsonPath("$.aiAnalysis").value((Object) null));
 
 		verify(userRepository).findById(1L);
 		ArgumentCaptor<Incident> incidentCaptor = ArgumentCaptor.forClass(Incident.class);

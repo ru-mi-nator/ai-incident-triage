@@ -127,6 +127,16 @@ class IncidentServiceTest {
 		verify(aiAnalysisRepository, never()).findPrioritiesByIncidentIds(any());
 	}
 
+	@Test
+	void missingIncidentDetailsThrowsScopedExceptionWithoutAiLookup() {
+		when(incidentRepository.findDetailsById(999L)).thenReturn(Optional.empty());
+
+		assertThatThrownBy(() -> incidentService.getIncidentDetails(999L))
+				.isInstanceOf(IncidentNotFoundException.class);
+
+		verify(aiAnalysisRepository, never()).findByIncidentId(any());
+	}
+
 	private CreateIncidentRequest validRequest() {
 		return new CreateIncidentRequest(
 				"Login API returning 500",

@@ -94,6 +94,17 @@ public class IncidentService {
 		);
 	}
 
+	@Transactional(readOnly = true)
+	public IncidentDetailsResponse getIncidentDetails(long incidentId) {
+		Incident incident = incidentRepository.findDetailsById(incidentId)
+				.orElseThrow(IncidentNotFoundException::new);
+
+		return IncidentDetailsResponse.from(
+				incident,
+				aiAnalysisRepository.findByIncidentId(incidentId).orElse(null)
+		);
+	}
+
 	private ListRequest validateListRequest(String pageValue, String sizeValue, String sortValue) {
 		Map<String, String> fieldErrors = new LinkedHashMap<>();
 		Integer page = parseInteger(pageValue, "page", "Page must be at least 0", fieldErrors);

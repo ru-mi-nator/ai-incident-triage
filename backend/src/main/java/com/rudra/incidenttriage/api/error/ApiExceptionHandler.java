@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.rudra.incidenttriage.incident.AuthenticatedUserNotFoundException;
 import com.rudra.incidenttriage.incident.IncidentCreationAccessDeniedException;
 import com.rudra.incidenttriage.incident.IncidentListValidationException;
+import com.rudra.incidenttriage.incident.IncidentNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -116,6 +117,21 @@ public class ApiExceptionHandler {
 						"Request validation failed",
 						request.getRequestURI(),
 						exception.getFieldErrors()
+				));
+	}
+
+	@ExceptionHandler(IncidentNotFoundException.class)
+	public ResponseEntity<ApiErrorResponse> handleIncidentNotFound(
+			IncidentNotFoundException exception,
+			HttpServletRequest request
+	) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(new ApiErrorResponse(
+						Instant.now(),
+						HttpStatus.NOT_FOUND.value(),
+						"INCIDENT_NOT_FOUND",
+						"Incident not found",
+						request.getRequestURI()
 				));
 	}
 
