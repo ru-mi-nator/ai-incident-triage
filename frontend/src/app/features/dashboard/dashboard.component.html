@@ -1,0 +1,17 @@
+@if (user(); as currentUser) {
+  <section aria-labelledby="welcome-heading">
+    <p class="eyebrow">Dashboard</p>
+    <h1 id="welcome-heading">Welcome, {{ currentUser.name }}</h1>
+    <p class="intro">You are signed in as {{ role() }}.</p>
+
+    <mat-card appearance="outlined">
+      <div class="card-icon"><mat-icon>construction</mat-icon></div>
+      <div>
+        <mat-card-title>Incident workspace coming next</mat-card-title>
+        <mat-card-content>
+          Incident management, triage, and resolution tools will appear in the next frontend slice.
+        </mat-card-content>
+      </div>
+    </mat-card>
+  </section>
+}

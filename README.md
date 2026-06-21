@@ -29,14 +29,13 @@ AI recommendations support, but do not replace, developer judgment. Synchronous 
 - PostgreSQL
 - Spring AI
 - OpenAI
-- Angular
-- PrimeNG
-- PrimeNG Aura theme
+- Angular 19
+- Angular Material
 - SCSS
 
 ## MVP Status
 
-The backend MVP is complete. It implements seven workflows: login, incident creation, incident listing, incident details, developer self-assignment, advisory AI analysis, and assigned-developer resolution. The Angular frontend and live OpenAI provider verification are still pending.
+The backend MVP is complete. It implements seven workflows: login, incident creation, incident listing, incident details, developer self-assignment, advisory AI analysis, and assigned-developer resolution. The Angular application foundation and authentication flow are implemented; incident UI and live OpenAI provider verification are still pending.
 
 ## Repository Structure
 
@@ -105,6 +104,24 @@ These credentials are for local/demo use only:
 
 Registration and user management are intentionally not part of the MVP. Only BCrypt password hashes are stored in PostgreSQL. These credentials must not be used for a real production deployment.
 
+## Frontend development
+
+The frontend uses Node.js `20.12.2`, npm `10.5.0`, Angular `19.2.x`, standalone components, Angular Material, and Karma/Jasmine.
+
+Start PostgreSQL and the Spring Boot backend on port `8080` before starting the frontend. Then run:
+
+```powershell
+Set-Location frontend
+npm install
+npm start
+```
+
+Open `http://localhost:4200`. The `npm start` command loads `proxy.conf.json`, which forwards relative `/api` requests to `http://localhost:8080`; no browser CORS configuration is required for local development.
+
+The current frontend slice includes login, session restoration through `sessionStorage`, bearer-token interception, protected routing, a reusable authenticated shell, logout, and a minimal dashboard. Incident listing, creation, details, assignment, AI analysis, resolution, filters, pagination, dashboards, and charts remain pending.
+
+The login screen shows the seeded demo usernames `support1` and `developer1`. Passwords are not prefilled or stored.
+
 ## Implementation Note
 
-The repository currently includes the Spring Boot backend foundation, local PostgreSQL Docker setup, Flyway schema and seeded demo users, JPA entities, Spring Data repositories, JWT authentication, incident creation, paginated incident summary listing, full incident-details retrieval, developer self-assignment, synchronous OpenAI-backed incident analysis, and assigned-developer incident resolution. Automated analysis tests use a mocked project-owned AI client; live OpenAI verification remains pending until a valid local API key is available. Editing, metadata, filtering/search, deletion, asynchronous AI processing, and the Angular frontend are still pending.
+The repository currently includes the Spring Boot backend foundation, local PostgreSQL Docker setup, Flyway schema and seeded demo users, JPA entities, Spring Data repositories, JWT authentication, incident creation, paginated incident summary listing, full incident-details retrieval, developer self-assignment, synchronous OpenAI-backed incident analysis, assigned-developer incident resolution, and the Angular authentication foundation. Automated analysis tests use a mocked project-owned AI client; live OpenAI verification remains pending until a valid local API key is available. Editing, metadata, filtering/search, deletion, asynchronous AI processing, and incident frontend features are still pending.

@@ -1,0 +1,56 @@
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: #176d87;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  color: #102b59;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  letter-spacing: -0.035em;
+}
+
+.intro {
+  margin: 0.8rem 0 2.5rem;
+  color: #657188;
+  font-size: 1.05rem;
+}
+
+mat-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.25rem;
+  max-width: 760px;
+  padding: 1.5rem;
+  border-color: #dce3ed;
+  border-radius: 16px;
+}
+
+.card-icon {
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  color: #176d87;
+  background: #dff8fc;
+  border-radius: 13px;
+}
+
+mat-card-title {
+  margin-bottom: 0.35rem;
+  color: #243653;
+  font-size: 1.1rem;
+  font-weight: 650;
+}
+
+mat-card-content {
+  padding: 0;
+  color: #657188;
+  line-height: 1.55;
+}

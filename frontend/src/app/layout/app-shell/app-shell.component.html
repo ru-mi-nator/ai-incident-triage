@@ -1,0 +1,29 @@
+<div class="shell">
+  <mat-toolbar>
+    <div class="brand">
+      <span class="brand-icon"><mat-icon>bolt</mat-icon></span>
+      <span>AI Incident Triage Portal</span>
+    </div>
+
+    <span class="toolbar-spacer"></span>
+
+    @if (user(); as currentUser) {
+      <div class="user-summary">
+        <span class="avatar" aria-hidden="true">{{ currentUser.name.charAt(0) }}</span>
+        <span class="user-copy">
+          <strong>{{ currentUser.name }}</strong>
+          <small>{{ role() }}</small>
+        </span>
+      </div>
+    }
+
+    <button mat-stroked-button type="button" (click)="logout()" aria-label="Log out">
+      <mat-icon>logout</mat-icon>
+      <span class="logout-label">Log out</span>
+    </button>
+  </mat-toolbar>
+
+  <main class="shell-content">
+    <router-outlet />
+  </main>
+</div>

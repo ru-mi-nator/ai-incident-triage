@@ -1,0 +1,101 @@
+.shell {
+  min-height: 100vh;
+  background: #f4f7fb;
+}
+
+mat-toolbar {
+  min-height: 72px;
+  padding: 0 clamp(1rem, 4vw, 3rem);
+  color: #fff;
+  background: #102b59;
+  box-shadow: 0 2px 12px rgba(16, 43, 89, 0.2);
+}
+
+.brand,
+.user-summary {
+  display: flex;
+  align-items: center;
+}
+
+.brand {
+  gap: 0.7rem;
+  font-size: 1rem;
+  font-weight: 650;
+}
+
+.brand-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: #102b59;
+  background: #8ce9ff;
+  border-radius: 9px;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.user-summary {
+  gap: 0.65rem;
+  margin-right: 1.25rem;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  color: #102b59;
+  background: #d9f8ff;
+  border-radius: 50%;
+  font-weight: 700;
+}
+
+.user-copy {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.user-copy strong {
+  font-size: 0.88rem;
+}
+
+.user-copy small {
+  color: #bfd0e8;
+  font-size: 0.72rem;
+}
+
+button {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.shell-content {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 4.5rem) 0;
+}
+
+@media (max-width: 650px) {
+  mat-toolbar {
+    min-height: 64px;
+  }
+
+  .brand > span:last-child,
+  .user-copy,
+  .logout-label {
+    display: none;
+  }
+
+  .user-summary {
+    margin-right: 0.55rem;
+  }
+
+  button {
+    min-width: 44px;
+    padding: 0 8px;
+  }
+}

@@ -1,0 +1,81 @@
+<main class="login-page">
+  <section class="brand-panel" aria-labelledby="portal-title">
+    <div class="brand-mark" aria-hidden="true">
+      <mat-icon>bolt</mat-icon>
+    </div>
+    <p class="eyebrow">Operations workspace</p>
+    <h1 id="portal-title">AI Incident Triage Portal</h1>
+    <p class="subtitle">
+      Turn incoming production signals into clear, AI-assisted triage while keeping people in control.
+    </p>
+    <div class="signal-card" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </section>
+
+  <section class="form-panel">
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>Welcome back</mat-card-title>
+        <mat-card-subtitle>Sign in to continue to the incident workspace.</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form [formGroup]="loginForm" (ngSubmit)="submit()" novalidate>
+          <mat-form-field appearance="outline">
+            <mat-label>Username</mat-label>
+            <input matInput formControlName="username" autocomplete="username" aria-label="Username" />
+            <mat-icon matPrefix>person</mat-icon>
+            @if (loginForm.controls.username.invalid && loginForm.controls.username.touched) {
+              <mat-error>Username is required.</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input
+              matInput
+              formControlName="password"
+              [type]="hidePassword() ? 'password' : 'text'"
+              autocomplete="current-password"
+              aria-label="Password"
+            />
+            <mat-icon matPrefix>lock</mat-icon>
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'"
+            >
+              <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+            </button>
+            @if (loginForm.controls.password.hasError('required') && loginForm.controls.password.touched) {
+              <mat-error>Password is required.</mat-error>
+            }
+          </mat-form-field>
+
+          @if (errorMessage()) {
+            <div class="login-error" role="alert">
+              <mat-icon aria-hidden="true">error_outline</mat-icon>
+              <span>{{ errorMessage() }}</span>
+            </div>
+          }
+
+          <button mat-flat-button color="primary" class="submit-button" type="submit" [disabled]="isLoading()">
+            @if (isLoading()) {
+              <mat-spinner diameter="20"></mat-spinner>
+              <span>Signing in…</span>
+            } @else {
+              <span>Sign in</span>
+            }
+          </button>
+        </form>
+      </mat-card-content>
+
+      <mat-card-footer>
+        <p>Local demo users: <code>support1</code> or <code>developer1</code></p>
+      </mat-card-footer>
+    </mat-card>
+  </section>
+</main>
