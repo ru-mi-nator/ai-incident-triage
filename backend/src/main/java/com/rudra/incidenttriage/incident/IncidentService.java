@@ -15,6 +15,7 @@ import com.rudra.incidenttriage.incident.dto.CreateIncidentRequest;
 import com.rudra.incidenttriage.incident.dto.IncidentDetailsResponse;
 import com.rudra.incidenttriage.incident.dto.IncidentPageResponse;
 import com.rudra.incidenttriage.incident.dto.IncidentSummaryResponse;
+import com.rudra.incidenttriage.incident.dto.ResolveIncidentRequest;
 import com.rudra.incidenttriage.repository.AiAnalysisRepository;
 import com.rudra.incidenttriage.repository.IncidentRepository;
 import com.rudra.incidenttriage.repository.UserRepository;
@@ -130,6 +131,45 @@ public class IncidentService {
 		}
 
 		incident.assignTo(developer, Instant.now());
+		Incident savedIncident = incidentRepository.save(incident);
+
+		return IncidentDetailsResponse.from(
+				savedIncident,
+				aiAnalysisRepository.findByIncidentId(incidentId).orElse(null)
+		);
+	}
+
+	@Transactional
+	public IncidentDetailsResponse resolveIncident(
+			long incidentId,
+			long authenticatedUserId,
+			ResolveIncidentRequest request
+	) {
+		User developer = userRepository.findById(authenticatedUserId)
+				.orElseThrow(AuthenticatedUserNotFoundException::new);
+
+		if (developer.getRole() != UserRole.DEVELOPER) {
+			throw new IncidentAssignmentAccessDeniedException();
+		}
+
+		Incident incident = incidentRepository.findByIdForResolution(incidentId)
+				.orElseThrow(IncidentNotFoundException::new);
+
+		if (incident.getAssignedDeveloper() == null
+				|| !incident.getAssignedDeveloper().getId().equals(developer.getId())) {
+			throw new IncidentAssignmentAccessDeniedException();
+		}
+		if (incident.getStatus() != IncidentStatus.IN_PROGRESS) {
+			throw new IncidentNotResolvableException();
+		}
+
+		incident.resolve(
+				request.finalCategory(),
+				request.finalPriority(),
+				request.actualRootCause(),
+				request.actualResolution(),
+				Instant.now()
+		);
 		Incident savedIncident = incidentRepository.save(incident);
 
 		return IncidentDetailsResponse.from(

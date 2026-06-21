@@ -3,6 +3,7 @@ package com.rudra.incidenttriage.incident;
 import com.rudra.incidenttriage.incident.dto.CreateIncidentRequest;
 import com.rudra.incidenttriage.incident.dto.IncidentDetailsResponse;
 import com.rudra.incidenttriage.incident.dto.IncidentPageResponse;
+import com.rudra.incidenttriage.incident.dto.ResolveIncidentRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -60,6 +61,17 @@ public class IncidentController {
 	) {
 		Number userId = jwt.getClaim("userId");
 		return incidentAnalysisService.analyze(id, userId.longValue());
+	}
+
+	@PostMapping("/{id}/resolve")
+	@PreAuthorize("hasRole('DEVELOPER')")
+	public IncidentDetailsResponse resolveIncident(
+			@PathVariable long id,
+			@Valid @RequestBody ResolveIncidentRequest request,
+			@AuthenticationPrincipal Jwt jwt
+	) {
+		Number userId = jwt.getClaim("userId");
+		return incidentService.resolveIncident(id, userId.longValue(), request);
 	}
 
 	@PostMapping

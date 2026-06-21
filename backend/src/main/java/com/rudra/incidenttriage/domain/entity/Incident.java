@@ -42,6 +42,9 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Incident {
 
+	private static final int MAX_ROOT_CAUSE_LENGTH = 2000;
+	private static final int MAX_RESOLUTION_LENGTH = 3000;
+
 	public static Incident open(
 			String title,
 			String description,
@@ -65,6 +68,62 @@ public class Incident {
 		this.assignedDeveloper = Objects.requireNonNull(developer, "developer must not be null");
 		this.assignedAt = Objects.requireNonNull(assignedAt, "assignedAt must not be null");
 		this.status = IncidentStatus.IN_PROGRESS;
+	}
+
+	public void resolve(
+			IncidentCategory finalCategory,
+			IncidentPriority finalPriority,
+			String actualRootCause,
+			String actualResolution,
+			Instant resolvedAt
+	) {
+		if (status != IncidentStatus.IN_PROGRESS) {
+			throw new IllegalStateException("incident must be in progress");
+		}
+		if (assignedDeveloper == null) {
+			throw new IllegalStateException("incident must have an assigned developer");
+		}
+
+		IncidentCategory validatedCategory = Objects.requireNonNull(
+				finalCategory,
+				"finalCategory must not be null"
+		);
+		IncidentPriority validatedPriority = Objects.requireNonNull(
+				finalPriority,
+				"finalPriority must not be null"
+		);
+		String validatedRootCause = validatedResolutionText(
+				actualRootCause,
+				MAX_ROOT_CAUSE_LENGTH,
+				"actualRootCause"
+		);
+		String validatedResolution = validatedResolutionText(
+				actualResolution,
+				MAX_RESOLUTION_LENGTH,
+				"actualResolution"
+		);
+		Instant validatedResolvedAt = Objects.requireNonNull(resolvedAt, "resolvedAt must not be null");
+
+		this.finalCategory = validatedCategory;
+		this.finalPriority = validatedPriority;
+		this.actualRootCause = validatedRootCause;
+		this.actualResolution = validatedResolution;
+		this.resolvedAt = validatedResolvedAt;
+		this.status = IncidentStatus.RESOLVED;
+	}
+
+	private String validatedResolutionText(String value, int maximumLength, String fieldName) {
+		if (value == null) {
+			throw new NullPointerException(fieldName + " must not be null");
+		}
+		String trimmed = value.trim();
+		if (trimmed.isEmpty()) {
+			throw new IllegalArgumentException(fieldName + " must not be blank");
+		}
+		if (trimmed.length() > maximumLength) {
+			throw new IllegalArgumentException(fieldName + " exceeds maximum length");
+		}
+		return trimmed;
 	}
 
 	@Id

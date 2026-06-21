@@ -33,6 +33,10 @@ public interface IncidentRepository extends JpaRepository<Incident, Long> {
 	@Query("select incident from Incident incident where incident.id = :id")
 	Optional<Incident> findByIdForAnalysis(@Param("id") Long id);
 
+	@Lock(LockModeType.PESSIMISTIC_WRITE)
+	@Query("select incident from Incident incident where incident.id = :id")
+	Optional<Incident> findByIdForResolution(@Param("id") Long id);
+
 	Page<Incident> findByStatus(IncidentStatus status, Pageable pageable);
 
 	Page<Incident> findByCreatedById(Long createdById, Pageable pageable);

@@ -18,6 +18,7 @@ import com.rudra.incidenttriage.incident.IncidentListValidationException;
 import com.rudra.incidenttriage.incident.IncidentNotAnalyzableException;
 import com.rudra.incidenttriage.incident.IncidentNotFoundException;
 import com.rudra.incidenttriage.incident.IncidentNotOpenException;
+import com.rudra.incidenttriage.incident.IncidentNotResolvableException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -198,6 +199,21 @@ public class ApiExceptionHandler {
 						HttpStatus.CONFLICT.value(),
 						"INCIDENT_NOT_OPEN",
 						"Only open incidents can be assigned",
+						request.getRequestURI()
+				));
+	}
+
+	@ExceptionHandler(IncidentNotResolvableException.class)
+	public ResponseEntity<ApiErrorResponse> handleIncidentNotResolvable(
+			IncidentNotResolvableException exception,
+			HttpServletRequest request
+	) {
+		return ResponseEntity.status(HttpStatus.CONFLICT)
+				.body(new ApiErrorResponse(
+						Instant.now(),
+						HttpStatus.CONFLICT.value(),
+						"INCIDENT_NOT_RESOLVABLE",
+						"Incident cannot be resolved in its current state",
 						request.getRequestURI()
 				));
 	}

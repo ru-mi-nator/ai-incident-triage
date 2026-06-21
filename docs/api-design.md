@@ -359,12 +359,21 @@ Request:
 Rules:
 
 - Only `DEVELOPER` may call it.
-- The incident must be `IN_PROGRESS`.
 - The authenticated developer must be the assigned developer.
+- The incident must be `IN_PROGRESS`.
+- Caller identity is taken from the JWT `userId`, then reloaded from the database to verify the current role is still `DEVELOPER`.
+- The incident is loaded with a pessimistic write lock so concurrent requests cannot both perform a valid transition.
 - All four fields are mandatory.
+- Category and priority must use the documented incident enums.
+- Root cause and resolution must not be blank; surrounding whitespace is trimmed before persistence.
 - Set status to `RESOLVED`.
 - Set `resolvedAt`.
-- Return the updated combined incident response.
+- AI analysis is optional. Existing AI analysis remains unchanged and is included in the response when present.
+- AI output is advisory; the final human-entered category, priority, root cause, and resolution are authoritative.
+- Return HTTP `200` with the full updated incident-details response.
+- Unknown incidents return HTTP `404` with `INCIDENT_NOT_FOUND`.
+- Incidents not assigned to the authenticated developer return HTTP `403` with `ACCESS_DENIED`.
+- Incidents outside `IN_PROGRESS`, including already resolved incidents, return HTTP `409` with `INCIDENT_NOT_RESOLVABLE`.
 
 Validation limits:
 
@@ -450,6 +459,7 @@ Planned business errors:
 | `AI_ANALYSIS_ALREADY_EXISTS` | `409` | A second AI analysis was requested |
 | `INCIDENT_NOT_ANALYZABLE` | `409` | Incident state is not eligible for AI analysis |
 | `AI_SERVICE_UNAVAILABLE` | `503` | Provider failed or returned unusable structured output |
+| `INCIDENT_NOT_RESOLVABLE` | `409` | Resolution requested for an incident outside its eligible state |
 | `INVALID_STATUS_TRANSITION` | `409` | Requested transition violates lifecycle rules |
 | `USER_NOT_AUTHORIZED` | `403` | Authenticated user cannot perform the action |
 | `INCIDENT_CANNOT_BE_EDITED` | `409` | Incident is not eligible for updates |

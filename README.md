@@ -9,9 +9,9 @@ AI Incident Triage Portal is a full-stack application that enables software supp
 - Implemented full incident-details retrieval for support engineers and developers.
 - Implemented developer self-assignment for open, unassigned incidents.
 - Implemented synchronous AI-assisted triage that produces structured category, priority, probable root cause, and suggested resolution output.
-- Planned human-in-the-loop developer review with the ability to accept or override AI recommendations.
+- Implemented assigned-developer resolution with authoritative human-entered category, priority, root cause, and resolution.
 - Designed separate persistence of original AI analysis and final human resolution decisions.
-- Planned MVP incident lifecycle from `OPEN` to `IN_PROGRESS` to `RESOLVED`.
+- Implemented the MVP incident lifecycle from `OPEN` to `IN_PROGRESS` to `RESOLVED`.
 - Designed role-based access for `SUPPORT_ENGINEER` and `DEVELOPER` users.
 
 ## Human-in-the-Loop AI Workflow
@@ -107,4 +107,4 @@ Registration and user management are intentionally not part of the MVP. Only BCr
 
 ## Implementation Note
 
-The repository currently includes the Spring Boot backend foundation, local PostgreSQL Docker setup, Flyway schema and seeded demo users, JPA entities, Spring Data repositories, JWT authentication, incident creation, paginated incident summary listing, full incident-details retrieval, developer self-assignment, and synchronous OpenAI-backed incident analysis. Automated analysis tests use a mocked project-owned AI client; live OpenAI verification remains pending until a valid local API key is available. Editing, resolution, metadata, filtering/search, deletion, asynchronous AI processing, and the Angular frontend are still pending.
+The repository currently includes the Spring Boot backend foundation, local PostgreSQL Docker setup, Flyway schema and seeded demo users, JPA entities, Spring Data repositories, JWT authentication, incident creation, paginated incident summary listing, full incident-details retrieval, developer self-assignment, synchronous OpenAI-backed incident analysis, and assigned-developer incident resolution. Automated analysis tests use a mocked project-owned AI client; live OpenAI verification remains pending until a valid local API key is available. Editing, metadata, filtering/search, deletion, asynchronous AI processing, and the Angular frontend are still pending.
