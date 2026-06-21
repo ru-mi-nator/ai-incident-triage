@@ -7,11 +7,15 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.rudra.incidenttriage.incident.AiAnalysisAlreadyExistsException;
+import com.rudra.incidenttriage.incident.AiServiceUnavailableException;
 import com.rudra.incidenttriage.incident.AuthenticatedUserNotFoundException;
+import com.rudra.incidenttriage.incident.IncidentAnalysisAccessDeniedException;
 import com.rudra.incidenttriage.incident.IncidentAlreadyAssignedException;
 import com.rudra.incidenttriage.incident.IncidentAssignmentAccessDeniedException;
 import com.rudra.incidenttriage.incident.IncidentCreationAccessDeniedException;
 import com.rudra.incidenttriage.incident.IncidentListValidationException;
+import com.rudra.incidenttriage.incident.IncidentNotAnalyzableException;
 import com.rudra.incidenttriage.incident.IncidentNotFoundException;
 import com.rudra.incidenttriage.incident.IncidentNotOpenException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -89,6 +93,21 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(IncidentAssignmentAccessDeniedException.class)
 	public ResponseEntity<ApiErrorResponse> handleIncidentAssignmentAccessDenied(
 			IncidentAssignmentAccessDeniedException exception,
+			HttpServletRequest request
+	) {
+		return ResponseEntity.status(HttpStatus.FORBIDDEN)
+				.body(new ApiErrorResponse(
+						Instant.now(),
+						HttpStatus.FORBIDDEN.value(),
+						"ACCESS_DENIED",
+						"You do not have permission to perform this action",
+						request.getRequestURI()
+				));
+	}
+
+	@ExceptionHandler(IncidentAnalysisAccessDeniedException.class)
+	public ResponseEntity<ApiErrorResponse> handleIncidentAnalysisAccessDenied(
+			IncidentAnalysisAccessDeniedException exception,
 			HttpServletRequest request
 	) {
 		return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -179,6 +198,51 @@ public class ApiExceptionHandler {
 						HttpStatus.CONFLICT.value(),
 						"INCIDENT_NOT_OPEN",
 						"Only open incidents can be assigned",
+						request.getRequestURI()
+				));
+	}
+
+	@ExceptionHandler(AiAnalysisAlreadyExistsException.class)
+	public ResponseEntity<ApiErrorResponse> handleAiAnalysisAlreadyExists(
+			AiAnalysisAlreadyExistsException exception,
+			HttpServletRequest request
+	) {
+		return ResponseEntity.status(HttpStatus.CONFLICT)
+				.body(new ApiErrorResponse(
+						Instant.now(),
+						HttpStatus.CONFLICT.value(),
+						"AI_ANALYSIS_ALREADY_EXISTS",
+						"AI analysis already exists for this incident",
+						request.getRequestURI()
+				));
+	}
+
+	@ExceptionHandler(IncidentNotAnalyzableException.class)
+	public ResponseEntity<ApiErrorResponse> handleIncidentNotAnalyzable(
+			IncidentNotAnalyzableException exception,
+			HttpServletRequest request
+	) {
+		return ResponseEntity.status(HttpStatus.CONFLICT)
+				.body(new ApiErrorResponse(
+						Instant.now(),
+						HttpStatus.CONFLICT.value(),
+						"INCIDENT_NOT_ANALYZABLE",
+						"Incident cannot be analyzed in its current state",
+						request.getRequestURI()
+				));
+	}
+
+	@ExceptionHandler(AiServiceUnavailableException.class)
+	public ResponseEntity<ApiErrorResponse> handleAiServiceUnavailable(
+			AiServiceUnavailableException exception,
+			HttpServletRequest request
+	) {
+		return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+				.body(new ApiErrorResponse(
+						Instant.now(),
+						HttpStatus.SERVICE_UNAVAILABLE.value(),
+						"AI_SERVICE_UNAVAILABLE",
+						"AI analysis is temporarily unavailable",
 						request.getRequestURI()
 				));
 	}

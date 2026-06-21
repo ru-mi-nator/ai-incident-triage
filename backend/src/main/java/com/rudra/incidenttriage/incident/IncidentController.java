@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class IncidentController {
 
 	private final IncidentService incidentService;
+	private final IncidentAnalysisService incidentAnalysisService;
 
 	@GetMapping
 	@PreAuthorize("hasAnyRole('SUPPORT_ENGINEER', 'DEVELOPER')")
@@ -49,6 +50,16 @@ public class IncidentController {
 	) {
 		Number userId = jwt.getClaim("userId");
 		return incidentService.assignIncidentToDeveloper(id, userId.longValue());
+	}
+
+	@PostMapping("/{id}/analyze")
+	@PreAuthorize("hasAnyRole('SUPPORT_ENGINEER', 'DEVELOPER')")
+	public IncidentDetailsResponse analyzeIncident(
+			@PathVariable long id,
+			@AuthenticationPrincipal Jwt jwt
+	) {
+		Number userId = jwt.getClaim("userId");
+		return incidentAnalysisService.analyze(id, userId.longValue());
 	}
 
 	@PostMapping

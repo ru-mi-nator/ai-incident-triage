@@ -8,7 +8,7 @@ AI Incident Triage Portal is a full-stack application that enables software supp
 - Implemented paginated incident summary listing for support engineers and developers.
 - Implemented full incident-details retrieval for support engineers and developers.
 - Implemented developer self-assignment for open, unassigned incidents.
-- Designed AI-assisted triage that produces structured category, priority, probable root cause, and suggested resolution output.
+- Implemented synchronous AI-assisted triage that produces structured category, priority, probable root cause, and suggested resolution output.
 - Planned human-in-the-loop developer review with the ability to accept or override AI recommendations.
 - Designed separate persistence of original AI analysis and final human resolution decisions.
 - Planned MVP incident lifecycle from `OPEN` to `IN_PROGRESS` to `RESOLVED`.
@@ -16,7 +16,7 @@ AI Incident Triage Portal is a full-stack application that enables software supp
 
 ## Human-in-the-Loop AI Workflow
 
-The platform is designed so AI recommendations support, but do not replace, developer judgment. AI analysis is stored as read-only triage guidance, while the assigned developer records the final category, priority, actual root cause, and actual resolution.
+AI recommendations support, but do not replace, developer judgment. Synchronous analysis is stored as read-only advisory triage guidance, while the assigned developer remains responsible for final category, priority, root cause, and resolution decisions.
 
 ## Planned Technology Stack
 
@@ -107,4 +107,4 @@ Registration and user management are intentionally not part of the MVP. Only BCr
 
 ## Implementation Note
 
-The repository currently includes the Spring Boot backend foundation, local PostgreSQL Docker setup, Flyway schema and seeded demo users, JPA entities, Spring Data repositories, JWT authentication, incident creation, paginated incident summary listing, full incident-details retrieval, and developer self-assignment. Editing, resolution, AI generation, metadata, filtering/search, deletion, and the Angular frontend are still pending.
+The repository currently includes the Spring Boot backend foundation, local PostgreSQL Docker setup, Flyway schema and seeded demo users, JPA entities, Spring Data repositories, JWT authentication, incident creation, paginated incident summary listing, full incident-details retrieval, developer self-assignment, and synchronous OpenAI-backed incident analysis. Automated analysis tests use a mocked project-owned AI client; live OpenAI verification remains pending until a valid local API key is available. Editing, resolution, metadata, filtering/search, deletion, asynchronous AI processing, and the Angular frontend are still pending.

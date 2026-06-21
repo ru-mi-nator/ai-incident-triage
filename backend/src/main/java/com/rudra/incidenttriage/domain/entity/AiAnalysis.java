@@ -1,6 +1,7 @@
 package com.rudra.incidenttriage.domain.entity;
 
 import java.time.Instant;
+import java.util.Objects;
 
 import com.rudra.incidenttriage.domain.enums.IncidentCategory;
 import com.rudra.incidenttriage.domain.enums.IncidentPriority;
@@ -31,6 +32,36 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AiAnalysis {
+
+	public static AiAnalysis create(
+			Incident incident,
+			IncidentCategory suggestedCategory,
+			IncidentPriority suggestedPriority,
+			String probableRootCause,
+			String suggestedResolution,
+			String modelName
+	) {
+		AiAnalysis analysis = new AiAnalysis();
+		analysis.incident = Objects.requireNonNull(incident, "incident must not be null");
+		analysis.suggestedCategory = Objects.requireNonNull(
+				suggestedCategory,
+				"suggestedCategory must not be null"
+		);
+		analysis.suggestedPriority = Objects.requireNonNull(
+				suggestedPriority,
+				"suggestedPriority must not be null"
+		);
+		analysis.probableRootCause = Objects.requireNonNull(
+				probableRootCause,
+				"probableRootCause must not be null"
+		);
+		analysis.suggestedResolution = Objects.requireNonNull(
+				suggestedResolution,
+				"suggestedResolution must not be null"
+		);
+		analysis.modelName = Objects.requireNonNull(modelName, "modelName must not be null");
+		return analysis;
+	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

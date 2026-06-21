@@ -92,7 +92,7 @@ Response:
 | `GET` | `/api/incidents?page=0&size=10&sort=createdAt,desc` | Yes | `SUPPORT_ENGINEER`, `DEVELOPER` | List incident summaries with pagination |
 | `GET` | `/api/incidents/{id}` | Yes | `SUPPORT_ENGINEER`, `DEVELOPER` | Get combined incident details |
 | `PUT` | `/api/incidents/{id}` | Yes | Creator `SUPPORT_ENGINEER` | Update eligible incident intake fields |
-| `POST` | `/api/incidents/{id}/analyze` | Yes | Eligible creator or assigned developer | Trigger AI analysis |
+| `POST` | `/api/incidents/{id}/analyze` | Yes | `SUPPORT_ENGINEER`, `DEVELOPER` subject to ownership and state rules | Trigger synchronous advisory AI analysis |
 | `POST` | `/api/incidents/{id}/assign-to-me` | Yes | `DEVELOPER` | Assign an open incident to the authenticated developer |
 | `POST` | `/api/incidents/{id}/resolve` | Yes | Assigned `DEVELOPER` | Resolve an assigned incident |
 
@@ -288,16 +288,34 @@ No request body is required.
 
 Rules:
 
-- The creator may analyse their own `OPEN` incident.
-- The assigned developer may analyse their own `IN_PROGRESS` incident.
+- The authenticated support engineer may analyse only an incident they created while it is unassigned and `OPEN`.
+- The authenticated developer may analyse only an incident assigned to them while it is `IN_PROGRESS`.
 - Only one analysis is allowed.
 - Resolved incidents cannot be analysed.
-- Return the updated combined incident response.
+- The caller identity comes only from the JWT and is revalidated against the current database user and role.
+- The request cannot supply a user identity or AI output.
+- The model receives only the incident title, description, application, environment, and optional error logs.
+- The OpenAI call runs without holding a database transaction or lock. A short persistence transaction then pessimistically locks and revalidates the incident before saving.
+- The existing unique incident-analysis constraint provides final duplicate protection.
+- Return HTTP `200` with the full incident-details response containing `aiAnalysis`.
+- AI output is advisory and requires human review; it does not update final incident decisions.
+- AI analysis is optional and is not required for a later human resolution workflow.
 
 AI response validation limits:
 
+- All four structured fields are required.
+- Category and priority must match the documented enums.
 - `probableRootCause`: maximum 2,000 characters
 - `suggestedResolution`: maximum 3,000 characters
+- Markdown-wrapped, incomplete, or otherwise unusable output is rejected and not persisted.
+
+Errors:
+
+- Unknown incident: HTTP `404`, `INCIDENT_NOT_FOUND`.
+- Existing analysis: HTTP `409`, `AI_ANALYSIS_ALREADY_EXISTS`.
+- Ineligible incident state: HTTP `409`, `INCIDENT_NOT_ANALYZABLE`.
+- Caller is not the creator or assigned developer: HTTP `403`, `ACCESS_DENIED`.
+- Provider failure or unusable structured output: HTTP `503`, `AI_SERVICE_UNAVAILABLE`.
 
 ### Assign Incident
 
@@ -430,9 +448,9 @@ Planned business errors:
 | `INCIDENT_ALREADY_ASSIGNED` | `409` | Assignment requested for an already assigned incident |
 | `INCIDENT_NOT_OPEN` | `409` | Assignment requested for an incident that is not open |
 | `AI_ANALYSIS_ALREADY_EXISTS` | `409` | A second AI analysis was requested |
+| `INCIDENT_NOT_ANALYZABLE` | `409` | Incident state is not eligible for AI analysis |
+| `AI_SERVICE_UNAVAILABLE` | `503` | Provider failed or returned unusable structured output |
 | `INVALID_STATUS_TRANSITION` | `409` | Requested transition violates lifecycle rules |
 | `USER_NOT_AUTHORIZED` | `403` | Authenticated user cannot perform the action |
 | `INCIDENT_CANNOT_BE_EDITED` | `409` | Incident is not eligible for updates |
 | `INCIDENT_ALREADY_RESOLVED` | `409` | Requested action is not allowed after resolution |
-| `AI_PROVIDER_FAILURE` | `502` | AI provider call failed |
-| `INVALID_AI_RESPONSE` | `502` | AI response failed structured validation |
