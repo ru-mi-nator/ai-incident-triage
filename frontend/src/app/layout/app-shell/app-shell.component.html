@@ -31,7 +31,7 @@
       [routerLinkActiveOptions]="{ exact: true }"
     >
       <mat-icon>dashboard</mat-icon>
-      Dashboard
+      <span class="nav-label"> Dashboard</span>
     </a>
     <a
       mat-button
@@ -40,7 +40,7 @@
       [routerLinkActiveOptions]="{ exact: true }"
     >
       <mat-icon>receipt_long</mat-icon>
-      Incidents
+      <span class="nav-label"> Incidents</span>
     </a>
     @if (isSupportEngineer()) {
       <a
@@ -50,7 +50,7 @@
         [routerLinkActiveOptions]="{ exact: true }"
       >
         <mat-icon>add_circle</mat-icon>
-        Create Incident
+        <span class="nav-label"> Create Incident</span>
       </a>
     }
   </nav>

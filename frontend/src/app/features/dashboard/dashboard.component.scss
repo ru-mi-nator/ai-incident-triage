@@ -42,7 +42,7 @@ mat-card {
   border-radius: 13px;
 }
 
-mat-card-title {
+h2[mat-card-title] {
   margin-bottom: 0.35rem;
   color: #243653;
   font-size: 1.1rem;

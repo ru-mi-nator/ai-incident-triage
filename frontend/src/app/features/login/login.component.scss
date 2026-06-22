@@ -117,7 +117,7 @@ mat-card-header {
   padding: 1.25rem 1.25rem 1.75rem;
 }
 
-mat-card-title {
+h2[mat-card-title] {
   margin-bottom: 0.5rem;
   font-size: 1.7rem;
   font-weight: 650;

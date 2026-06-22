@@ -131,5 +131,17 @@ button {
 
   .primary-nav a {
     flex: 1 1 auto;
+    min-width: 0;
+    padding-inline: 0.5rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .nav-label {
+    font-size: 0.78rem;
+  }
+
+  .primary-nav a {
+    gap: 0.2rem;
   }
 }

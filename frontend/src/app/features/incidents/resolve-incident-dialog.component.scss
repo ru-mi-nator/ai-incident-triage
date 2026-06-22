@@ -1,5 +1,6 @@
 :host {
   display: block;
+  max-height: 92vh;
 }
 
 .dialog-intro {
@@ -64,5 +65,11 @@ mat-spinner {
 
   mat-dialog-actions button {
     width: 100%;
+  }
+}
+
+@media (max-height: 760px) {
+  .form-grid textarea {
+    min-height: 5rem;
   }
 }

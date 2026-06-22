@@ -1,99 +1,136 @@
 # AI Incident Triage Portal
 
-AI Incident Triage Portal is a full-stack application that enables software support teams to submit incidents and receive AI-generated category, priority, probable root-cause, and resolution recommendations. Developers can review, accept, or override the AI suggestions before recording the final resolution, preserving a human-in-the-loop decision process.
+A full-stack MVP for submitting, assigning, AI-assisted triaging, and resolving software incidents with human-reviewed final outcomes.
 
-## Core Product Capabilities
-
-- Implemented incident intake for support engineers with application, environment, description, and optional error logs.
-- Implemented paginated incident summary listing for support engineers and developers.
-- Implemented full incident-details retrieval for support engineers and developers.
-- Implemented developer self-assignment for open, unassigned incidents.
-- Implemented synchronous AI-assisted triage that produces structured category, priority, probable root cause, and suggested resolution output.
-- Implemented assigned-developer resolution with authoritative human-entered category, priority, root cause, and resolution.
-- Designed separate persistence of original AI analysis and final human resolution decisions.
-- Implemented the MVP incident lifecycle from `OPEN` to `IN_PROGRESS` to `RESOLVED`.
-- Designed role-based access for `SUPPORT_ENGINEER` and `DEVELOPER` users.
-
-## Human-in-the-Loop AI Workflow
-
-AI recommendations support, but do not replace, developer judgment. Synchronous analysis is stored as read-only advisory triage guidance, while the assigned developer remains responsible for final category, priority, root cause, and resolution decisions.
-
-## Planned Technology Stack
-
-- Java 17
-- Spring Boot
-- Spring Web
-- Spring Security
-- JWT authentication
-- Spring Data JPA
-- PostgreSQL
-- Spring AI
-- OpenAI
-- Angular 19
-- Angular Material
-- SCSS
-
-## MVP Status
-
-The backend MVP is complete. It implements seven workflows: login, incident creation, incident listing, incident details, developer self-assignment, advisory AI analysis, and assigned-developer resolution. The Angular application now implements the full core frontend workflow: authentication, a protected paginated incident list, Support Engineer incident creation, incident details, developer assignment, role-aware AI-analysis triggering and display, and assigned-developer resolution. Live OpenAI provider verification is still pending; final polish and end-to-end review remain.
-
-## Repository Structure
+## Core workflow
 
 ```text
-ai-incident-triage/
-|-- backend/
-|-- frontend/
-|-- docs/
-|   |-- product-requirements.md
-|   |-- database-design.md
-|   `-- api-design.md
-|-- README.md
-`-- .gitignore
+Login
+→ Incident list
+→ Create incident
+→ Incident details
+→ Assign to me
+→ Generate AI analysis
+→ Resolve incident
+→ Final resolved details
 ```
 
-## Design Documentation
+Support Engineers create and monitor incidents. Developers self-assign open incidents, optionally request advisory AI analysis, and record the authoritative final resolution.
 
-- [Product Requirements](docs/product-requirements.md)
-- [Database Design](docs/database-design.md)
-- [API Design](docs/api-design.md)
+## Tech stack
 
-## Local PostgreSQL Setup
+- Java 17, Spring Boot, Spring Security, JWT, Spring Data JPA, Flyway
+- PostgreSQL 16
+- Spring AI with OpenAI
+- Angular 19, Angular Material, SCSS
+- Maven, npm, Karma, Jasmine
 
-Copy the example environment file:
+## Architecture
+
+The Angular single-page application calls relative `/api` endpoints through the local development proxy. Spring Boot owns authentication, authorization, incident lifecycle rules, synchronous AI orchestration, and persistence. PostgreSQL stores users, incidents, advisory AI analysis, and final human-entered resolution data.
+
+```text
+Angular UI → /api → Spring Boot → PostgreSQL
+                         └──────→ OpenAI (when configured)
+```
+
+## Roles and lifecycle
+
+| Role | Responsibilities |
+| --- | --- |
+| Support Engineer | Sign in, create incidents, view incidents, and request AI analysis for their own open incidents |
+| Developer | Sign in, view incidents, self-assign open incidents, analyze assigned incidents, and resolve their own assigned incidents |
+
+```text
+OPEN → IN_PROGRESS → RESOLVED
+```
+
+Incidents cannot currently be edited, deleted, or reopened through the application.
+
+## Main features
+
+- JWT authentication with protected, role-aware routes
+- Paginated incident list with preserved page context
+- Validated incident creation with optional error logs
+- Incident details with safe loading, empty, and error states
+- Developer self-assignment
+- Advisory AI category, priority, root-cause, and resolution suggestions
+- Human-entered final category, priority, root cause, and resolution
+- Responsive Angular Material interface
+- Race protection for route changes and duplicate actions
+
+## AI behaviour
+
+AI analysis is synchronous and advisory. The assigned developer remains responsible for the final resolution. Automated tests use a mocked project-owned AI client.
+
+Live OpenAI verification is pending and requires a valid local `OPENAI_API_KEY`. When no usable provider configuration is available, the API returns a safe unavailable response and leaves the incident unchanged. A local provider such as Ollama may be considered as a future enhancement; it is not implemented.
+
+## Local prerequisites
+
+- Java 17 or later
+- Node.js 20 and npm 10
+- Docker Desktop with Docker Compose
+
+## Environment setup
+
+Copy the example file and replace its placeholder values:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Start PostgreSQL:
+Required variables:
+
+| Variable | Purpose |
+| --- | --- |
+| `POSTGRES_DB` | Database name |
+| `POSTGRES_HOST` | Database host |
+| `POSTGRES_USER` | Database user |
+| `POSTGRES_PASSWORD` | Database password |
+| `POSTGRES_PORT` | Host PostgreSQL port |
+| `JWT_SECRET` | Base64-encoded JWT secret of at least 32 random bytes |
+| `OPENAI_API_KEY` | Optional for live AI analysis |
+| `OPENAI_MODEL` | OpenAI model name |
+
+Do not commit `.env` or real secrets.
+
+## Run locally
+
+Start PostgreSQL from the repository root:
 
 ```powershell
 docker compose up -d
-```
-
-Check container status:
-
-```powershell
 docker compose ps
 ```
 
-Stop PostgreSQL without deleting data:
+Load `.env` and start the backend:
 
 ```powershell
-docker compose down
+Get-Content .env | ForEach-Object {
+    if ($_ -match '^\s*([^#][^=]*)=(.*)$') {
+        [Environment]::SetEnvironmentVariable(
+            $Matches[1].Trim(),
+            $Matches[2],
+            'Process'
+        )
+    }
+}
+
+Set-Location backend
+.\mvnw.cmd spring-boot:run
 ```
 
-For a full database reset, stop PostgreSQL and delete the database volume:
+In a separate PowerShell window, start Angular:
 
 ```powershell
-docker compose down -v
+Set-Location frontend
+npm install
+npm start
 ```
 
-This command intentionally deletes the PostgreSQL volume and should only be used when a full local database reset is needed.
+Open `http://localhost:4200/login`. The Angular proxy forwards `/api` requests to `http://localhost:8080`.
 
-## Local demo credentials
-
-These credentials are for local/demo use only:
+## Demo credentials
 
 | Role | Username | Password |
 | --- | --- | --- |
@@ -102,26 +139,51 @@ These credentials are for local/demo use only:
 | Developer | `developer1` | `Developer@123` |
 | Developer | `developer2` | `Developer@123` |
 
-Registration and user management are intentionally not part of the MVP. Only BCrypt password hashes are stored in PostgreSQL. These credentials must not be used for a real production deployment.
+These accounts are for local demonstration only.
 
-## Frontend development
+## Testing
 
-The frontend uses Node.js `20.12.2`, npm `10.5.0`, Angular `19.2.x`, standalone components, Angular Material, and Karma/Jasmine.
+Backend:
 
-Start PostgreSQL and the Spring Boot backend on port `8080` before starting the frontend. Then run:
+```powershell
+Set-Location backend
+.\mvnw.cmd test
+```
+
+Frontend:
 
 ```powershell
 Set-Location frontend
-npm install
-npm start
+npm test -- --watch=false --browsers=ChromeHeadless
+npm run build
 ```
 
-Open `http://localhost:4200`. The `npm start` command loads `proxy.conf.json`, which forwards relative `/api` requests to `http://localhost:8080`; no browser CORS configuration is required for local development.
+## API summary
 
-The current frontend includes login, session restoration through `sessionStorage`, bearer-token interception, protected routing, a reusable authenticated shell, logout, dashboard navigation, a paginated incident list, Support Engineer-only incident creation, and lifecycle-aware incident details. The details page includes developer self-assignment, eligible Support Engineer/developer AI-analysis triggering and display, and a validated assigned-developer resolution dialog. Live OpenAI verification, final polish, and end-to-end review remain pending. Filters, search, charts, and richer dashboards are outside the completed core workflow.
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| `POST` | `/api/auth/login` | Authenticate and issue a JWT |
+| `GET` | `/api/incidents` | List incidents with pagination |
+| `POST` | `/api/incidents` | Create an incident |
+| `GET` | `/api/incidents/{id}` | Get incident details |
+| `POST` | `/api/incidents/{id}/assign-to-me` | Assign an open incident to the current developer |
+| `POST` | `/api/incidents/{id}/analyze` | Generate synchronous advisory AI analysis |
+| `POST` | `/api/incidents/{id}/resolve` | Record the final resolution |
 
-The login screen shows the seeded demo usernames `support1` and `developer1`. Passwords are not prefilled or stored.
+See [API Design](docs/api-design.md), [Database Design](docs/database-design.md), and [Product Requirements](docs/product-requirements.md).
 
-## Implementation Note
+## Current limitations
 
-The repository currently includes the Spring Boot backend foundation, local PostgreSQL Docker setup, Flyway schema and seeded demo users, JPA entities, Spring Data repositories, JWT authentication, incident creation, paginated incident summary listing, full incident-details retrieval, developer self-assignment, synchronous OpenAI-backed incident analysis, assigned-developer incident resolution, and the complete core Angular workflow through final resolution. Automated analysis tests use a mocked project-owned AI client; live OpenAI verification remains pending until a valid local API key is available. Editing, metadata, filtering/search, deletion, and asynchronous AI processing remain outside this slice.
+- Live OpenAI provider verification is pending.
+- AI analysis runs synchronously.
+- No incident editing, deletion, reopening, search, filters, dashboards, charts, notifications, or uploads.
+- No registration, refresh tokens, Swagger, circuit breaker, or production deployment setup.
+- This repository is an MVP and does not claim production readiness.
+
+## Future enhancements
+
+- Optional local AI provider support such as Ollama
+- Asynchronous AI analysis and resilience controls
+- Search, filtering, richer operational views, notifications, and deployment automation
+
+The core MVP workflow is complete.
