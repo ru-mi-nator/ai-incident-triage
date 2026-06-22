@@ -5,12 +5,15 @@
     <p class="intro">You are signed in as {{ role() }}.</p>
 
     <mat-card appearance="outlined">
-      <div class="card-icon"><mat-icon>construction</mat-icon></div>
+      <div class="card-icon"><mat-icon>receipt_long</mat-icon></div>
       <div>
-        <mat-card-title>Incident workspace coming next</mat-card-title>
+        <mat-card-title>Incident workspace</mat-card-title>
         <mat-card-content>
-          Incident management, triage, and resolution tools will appear in the next frontend slice.
+          Review paginated incident summaries across applications and environments.
         </mat-card-content>
+        <mat-card-actions>
+          <a mat-flat-button routerLink="/incidents">View Incidents</a>
+        </mat-card-actions>
       </div>
     </mat-card>
   </section>

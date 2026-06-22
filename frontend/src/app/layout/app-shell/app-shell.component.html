@@ -23,6 +23,17 @@
     </button>
   </mat-toolbar>
 
+  <nav class="primary-nav" aria-label="Primary navigation">
+    <a mat-button routerLink="/dashboard" routerLinkActive="active-link">
+      <mat-icon>dashboard</mat-icon>
+      Dashboard
+    </a>
+    <a mat-button routerLink="/incidents" routerLinkActive="active-link">
+      <mat-icon>receipt_long</mat-icon>
+      Incidents
+    </a>
+  </nav>
+
   <main class="shell-content">
     <router-outlet />
   </main>

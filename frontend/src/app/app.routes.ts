@@ -21,6 +21,12 @@ export const routes: Routes = [
         component: DashboardComponent,
         title: 'Dashboard | AI Incident Triage Portal'
       },
+      {
+        path: 'incidents',
+        loadComponent: () => import('./features/incidents/incident-list.component')
+          .then(module => module.IncidentListComponent),
+        title: 'Incidents | AI Incident Triage Portal'
+      },
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' }
     ]
   },

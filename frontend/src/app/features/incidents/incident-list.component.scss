@@ -1,0 +1,155 @@
+.incidents-page {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.55rem;
+  color: #176d87;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  color: #102b59;
+  font-size: clamp(2rem, 4vw, 3rem);
+  letter-spacing: -0.035em;
+}
+
+.subtitle {
+  margin: 0.65rem 0 0;
+  color: #657188;
+}
+
+mat-card {
+  overflow: hidden;
+  border-color: #dce3ed;
+  border-radius: 16px;
+}
+
+.loading-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 1.25rem;
+  color: #40516c;
+  background: #eef8fb;
+  border-bottom: 1px solid #dce8ed;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 980px;
+}
+
+th {
+  color: #55647b;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+td {
+  color: #34425a;
+}
+
+.display-id,
+.incident-title {
+  display: block;
+}
+
+.display-id {
+  margin-bottom: 0.25rem;
+  color: #176d87;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.incident-title {
+  max-width: 280px;
+  color: #1f3150;
+}
+
+mat-chip {
+  font-size: 0.78rem;
+}
+
+.status-open {
+  --mdc-chip-elevated-container-color: #e9f5ff;
+}
+
+.status-in_progress {
+  --mdc-chip-elevated-container-color: #fff4d6;
+}
+
+.status-resolved {
+  --mdc-chip-elevated-container-color: #e6f6ea;
+}
+
+.priority-critical,
+.priority-high {
+  --mdc-chip-elevated-container-color: #ffe8e5;
+}
+
+.priority-medium {
+  --mdc-chip-elevated-container-color: #fff4d6;
+}
+
+.priority-low {
+  --mdc-chip-elevated-container-color: #edf1f6;
+}
+
+.muted {
+  color: #79859a;
+}
+
+.state-panel {
+  display: grid;
+  justify-items: center;
+  padding: 4rem 1.5rem;
+  text-align: center;
+}
+
+.state-panel mat-icon {
+  width: 48px;
+  height: 48px;
+  color: #6f7e94;
+  font-size: 48px;
+}
+
+.state-panel h2 {
+  margin: 1rem 0 0.35rem;
+  color: #243653;
+}
+
+.state-panel p {
+  margin: 0 0 1.25rem;
+  color: #657188;
+}
+
+@media (max-width: 650px) {
+  .page-header {
+    align-items: flex-start;
+  }
+
+  .page-header button {
+    flex: 0 0 auto;
+  }
+}
+
