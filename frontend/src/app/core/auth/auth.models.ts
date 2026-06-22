@@ -25,4 +25,5 @@ export interface ApiErrorResponse {
   readonly errorCode: string;
   readonly message: string;
   readonly path: string;
+  readonly fieldErrors?: Readonly<Record<string, string>>;
 }

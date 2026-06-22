@@ -24,14 +24,35 @@
   </mat-toolbar>
 
   <nav class="primary-nav" aria-label="Primary navigation">
-    <a mat-button routerLink="/dashboard" routerLinkActive="active-link">
+    <a
+      mat-button
+      routerLink="/dashboard"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
       <mat-icon>dashboard</mat-icon>
       Dashboard
     </a>
-    <a mat-button routerLink="/incidents" routerLinkActive="active-link">
+    <a
+      mat-button
+      routerLink="/incidents"
+      routerLinkActive="active-link"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
       <mat-icon>receipt_long</mat-icon>
       Incidents
     </a>
+    @if (isSupportEngineer()) {
+      <a
+        mat-button
+        routerLink="/incidents/new"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <mat-icon>add_circle</mat-icon>
+        Create Incident
+      </a>
+    }
   </nav>
 
   <main class="shell-content">

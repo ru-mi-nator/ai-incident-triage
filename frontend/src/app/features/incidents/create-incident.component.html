@@ -1,0 +1,109 @@
+<section class="create-page" aria-labelledby="create-heading">
+  <header>
+    <p class="eyebrow">Incident intake</p>
+    <h1 id="create-heading">Create Incident</h1>
+    <p class="subtitle">Capture the issue clearly so the team can begin triage.</p>
+  </header>
+
+  <mat-card appearance="outlined">
+    <form [formGroup]="createForm" (ngSubmit)="submit()" novalidate>
+      <div class="form-grid">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" />
+          <mat-hint align="end">
+            {{ characterCount(createForm.controls.title.value) }}/150
+          </mat-hint>
+          @if (createForm.controls.title.hasError('required') || createForm.controls.title.hasError('blank')) {
+            <mat-error>Title is required and cannot contain only whitespace.</mat-error>
+          } @else if (createForm.controls.title.hasError('maxlength')) {
+            <mat-error>Title must not exceed 150 characters.</mat-error>
+          } @else if (createForm.controls.title.hasError('server')) {
+            <mat-error>Please review the title.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" rows="7"></textarea>
+          <mat-hint align="end">
+            {{ characterCount(createForm.controls.description.value) }}/2000
+          </mat-hint>
+          @if (createForm.controls.description.hasError('required')
+            || createForm.controls.description.hasError('blank')) {
+            <mat-error>Description is required and cannot contain only whitespace.</mat-error>
+          } @else if (createForm.controls.description.hasError('maxlength')) {
+            <mat-error>Description must not exceed 2000 characters.</mat-error>
+          } @else if (createForm.controls.description.hasError('server')) {
+            <mat-error>Please review the description.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Application</mat-label>
+          <mat-select formControlName="applicationName">
+            @for (application of applications; track application) {
+              <mat-option [value]="application">{{ applicationLabel(application) }}</mat-option>
+            }
+          </mat-select>
+          @if (createForm.controls.applicationName.hasError('required')) {
+            <mat-error>Application is required.</mat-error>
+          } @else if (createForm.controls.applicationName.hasError('server')) {
+            <mat-error>Please review the application.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Environment</mat-label>
+          <mat-select formControlName="environment">
+            @for (environment of environments; track environment) {
+              <mat-option [value]="environment">{{ environmentLabel(environment) }}</mat-option>
+            }
+          </mat-select>
+          @if (createForm.controls.environment.hasError('required')) {
+            <mat-error>Environment is required.</mat-error>
+          } @else if (createForm.controls.environment.hasError('server')) {
+            <mat-error>Please review the environment.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Error logs (optional)</mat-label>
+          <textarea matInput formControlName="errorLogs" rows="9"></textarea>
+          <mat-hint>Include only relevant technical output.</mat-hint>
+          <mat-hint align="end">
+            {{ characterCount(createForm.controls.errorLogs.value) }}/10000
+          </mat-hint>
+          @if (createForm.controls.errorLogs.hasError('maxlength')) {
+            <mat-error>Error logs must not exceed 10000 characters.</mat-error>
+          } @else if (createForm.controls.errorLogs.hasError('server')) {
+            <mat-error>Please review the error logs.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      @if (errorMessage(); as message) {
+        <div class="form-error" role="alert">
+          <mat-icon aria-hidden="true">error_outline</mat-icon>
+          <span>{{ message }}</span>
+        </div>
+      }
+
+      <div class="actions">
+        <a mat-button routerLink="/incidents">Cancel</a>
+        <button
+          mat-flat-button
+          type="submit"
+          [disabled]="createForm.invalid || submitting()"
+        >
+          @if (submitting()) {
+            <mat-spinner diameter="20" />
+            Creating...
+          } @else {
+            Create Incident
+          }
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</section>

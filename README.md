@@ -35,7 +35,7 @@ AI recommendations support, but do not replace, developer judgment. Synchronous 
 
 ## MVP Status
 
-The backend MVP is complete. It implements seven workflows: login, incident creation, incident listing, incident details, developer self-assignment, advisory AI analysis, and assigned-developer resolution. The Angular application includes authentication plus a protected, paginated incident list; creation, details, and incident actions remain pending. Live OpenAI provider verification is also pending.
+The backend MVP is complete. It implements seven workflows: login, incident creation, incident listing, incident details, developer self-assignment, advisory AI analysis, and assigned-developer resolution. The Angular application includes authentication, a protected paginated incident list, and Support Engineer incident creation; details and role actions remain pending. Live OpenAI provider verification is also pending.
 
 ## Repository Structure
 
@@ -118,10 +118,10 @@ npm start
 
 Open `http://localhost:4200`. The `npm start` command loads `proxy.conf.json`, which forwards relative `/api` requests to `http://localhost:8080`; no browser CORS configuration is required for local development.
 
-The current frontend slice includes login, session restoration through `sessionStorage`, bearer-token interception, protected routing, a reusable authenticated shell, logout, dashboard navigation, and a paginated incident list with loading, empty, error, refresh, and retry states. Incident creation, details, assignment, AI analysis, resolution, filters, search, charts, and richer dashboards remain pending.
+The current frontend includes login, session restoration through `sessionStorage`, bearer-token interception, protected routing, a reusable authenticated shell, logout, dashboard navigation, a paginated incident list, and Support Engineer-only incident creation with validation and safe API-error handling. Incident details, assignment, AI analysis, resolution, filters, search, charts, and richer dashboards remain pending.
 
 The login screen shows the seeded demo usernames `support1` and `developer1`. Passwords are not prefilled or stored.
 
 ## Implementation Note
 
-The repository currently includes the Spring Boot backend foundation, local PostgreSQL Docker setup, Flyway schema and seeded demo users, JPA entities, Spring Data repositories, JWT authentication, incident creation, paginated incident summary listing, full incident-details retrieval, developer self-assignment, synchronous OpenAI-backed incident analysis, assigned-developer incident resolution, the Angular authentication foundation, and the Angular incident-list and navigation slice. Automated analysis tests use a mocked project-owned AI client; live OpenAI verification remains pending until a valid local API key is available. Incident creation/details/actions in Angular, editing, metadata, filtering/search, deletion, and asynchronous AI processing remain pending.
+The repository currently includes the Spring Boot backend foundation, local PostgreSQL Docker setup, Flyway schema and seeded demo users, JPA entities, Spring Data repositories, JWT authentication, incident creation, paginated incident summary listing, full incident-details retrieval, developer self-assignment, synchronous OpenAI-backed incident analysis, assigned-developer incident resolution, the Angular authentication foundation, the Angular incident list, and Support Engineer incident creation. Automated analysis tests use a mocked project-owned AI client; live OpenAI verification remains pending until a valid local API key is available. Incident details and role actions in Angular, editing, metadata, filtering/search, deletion, and asynchronous AI processing remain pending.

@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IncidentPage } from './incident.models';
+import { CreateIncidentRequest, CreatedIncident, IncidentPage } from './incident.models';
 
 @Injectable({ providedIn: 'root' })
 export class IncidentService {
@@ -15,5 +15,8 @@ export class IncidentService {
 
     return this.http.get<IncidentPage>('/api/incidents', { params });
   }
-}
 
+  createIncident(request: CreateIncidentRequest): Observable<CreatedIncident> {
+    return this.http.post<CreatedIncident>('/api/incidents', request);
+  }
+}

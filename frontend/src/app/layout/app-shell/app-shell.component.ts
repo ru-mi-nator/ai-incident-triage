@@ -24,6 +24,7 @@ export class AppShellComponent {
   private readonly router = inject(Router);
 
   readonly user = this.auth.currentUser;
+  readonly isSupportEngineer = computed(() => this.user()?.role === 'SUPPORT_ENGINEER');
   readonly role = computed(() => {
     const user = this.user();
     return user ? roleLabel(user.role) : '';

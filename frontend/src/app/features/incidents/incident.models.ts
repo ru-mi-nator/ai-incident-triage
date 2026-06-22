@@ -32,3 +32,19 @@ export interface IncidentPage {
   readonly first: boolean;
   readonly last: boolean;
 }
+
+export interface CreateIncidentRequest {
+  readonly title: string;
+  readonly description: string;
+  readonly applicationName: ApplicationName;
+  readonly environment: IncidentEnvironment;
+  readonly errorLogs: string | null;
+}
+
+export interface CreatedIncident {
+  readonly id: number;
+  readonly displayId: string;
+  readonly status: IncidentStatus;
+  readonly createdBy: AuthenticatedUser;
+  readonly assignedDeveloper: AuthenticatedUser | null;
+}
