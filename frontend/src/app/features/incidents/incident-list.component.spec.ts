@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { convertToParamMap, ActivatedRoute, Router } from '@angular/router';
+import { convertToParamMap, ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subject, of, throwError } from 'rxjs';
 import { IncidentPage } from './incident.models';
 import { IncidentListComponent } from './incident-list.component';
@@ -12,7 +12,7 @@ describe('IncidentListComponent', () => {
   let component: IncidentListComponent;
   let queryParams: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
   let service: jasmine.SpyObj<IncidentService>;
-  let router: jasmine.SpyObj<Router>;
+  let router: Router;
 
   const populatedPage: IncidentPage = {
     content: [{
@@ -41,22 +41,21 @@ describe('IncidentListComponent', () => {
     queryParams = new BehaviorSubject(convertToParamMap(params));
     service = jasmine.createSpyObj<IncidentService>('IncidentService', ['getIncidents']);
     service.getIncidents.and.returnValue(response);
-    router = jasmine.createSpyObj<Router>('Router', ['navigate']);
-    router.navigate.and.resolveTo(true);
-
     await TestBed.configureTestingModule({
       imports: [IncidentListComponent],
       providers: [
         provideNoopAnimations(),
+        provideRouter([]),
         { provide: IncidentService, useValue: service },
         {
           provide: ActivatedRoute,
           useValue: { queryParamMap: queryParams.asObservable() }
-        },
-        { provide: Router, useValue: router }
+        }
       ]
     }).compileComponents();
 
+    router = TestBed.inject(Router);
+    spyOn(router, 'navigate').and.resolveTo(true);
     fixture = TestBed.createComponent(IncidentListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -76,6 +75,8 @@ describe('IncidentListComponent', () => {
     expect(text).toContain('In Progress');
     expect(text).toContain('Not assessed');
     expect(text).toContain('Unassigned');
+    const link = fixture.nativeElement.querySelector('.incident-link') as HTMLAnchorElement;
+    expect(link.getAttribute('href')).toBe('/incidents/42?page=0&size=10');
   });
 
   it('requests the selected page and resets to page 0 when page size changes', async () => {
@@ -100,6 +101,17 @@ describe('IncidentListComponent', () => {
     await configure(of(populatedPage), { page: '-4', size: '999' });
 
     expect(service.getIncidents).toHaveBeenCalledOnceWith(0, 10, 'createdAt,desc');
+  });
+
+  it('preserves the current page and size in incident details links', async () => {
+    await configure(of({ ...populatedPage, page: 2, size: 20 }), {
+      page: '2',
+      size: '20'
+    });
+
+    const link = fixture.nativeElement.querySelector('.incident-link') as HTMLAnchorElement;
+    expect(link.getAttribute('href')).toBe('/incidents/42?page=2&size=20');
+    expect(fixture.nativeElement.querySelectorAll('td button').length).toBe(0);
   });
 
   it('shows loading while a request is pending', async () => {

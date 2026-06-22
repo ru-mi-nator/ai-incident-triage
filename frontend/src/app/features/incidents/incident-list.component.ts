@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { catchError, map, of, Subject, switchMap, tap } from 'rxjs';
 import { enumLabel } from './incident-labels';
 import { IncidentPage, IncidentSummary } from './incident.models';
@@ -33,6 +33,7 @@ type IncidentPageResult =
   selector: 'app-incident-list',
   imports: [
     DatePipe,
+    RouterLink,
     MatButtonModule,
     MatCardModule,
     MatChipsModule,
@@ -68,6 +69,10 @@ export class IncidentListComponent {
     'createdAt'
   ];
   readonly label = enumLabel;
+
+  detailsQueryParams(): { page: number; size: number } {
+    return { page: this.pageIndex(), size: this.pageSize() };
+  }
 
   constructor() {
     this.pageRequests

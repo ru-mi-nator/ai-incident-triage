@@ -1,0 +1,181 @@
+<section class="details-page" aria-labelledby="details-heading">
+  <a
+    mat-button
+    class="back-link"
+    routerLink="/incidents"
+    [queryParams]="backQueryParams()"
+  >
+    <mat-icon>arrow_back</mat-icon>
+    Back to Incidents
+  </a>
+
+  @if (loading()) {
+    <div class="state-panel" role="status" aria-live="polite">
+      <mat-spinner diameter="38" />
+      <p>Loading incident details...</p>
+    </div>
+  } @else if (state() === 'invalid' || state() === 'not-found') {
+    <div class="state-panel" role="alert">
+      <mat-icon>search_off</mat-icon>
+      <h1 id="details-heading">Incident not found.</h1>
+      <p>The incident ID is invalid or the incident no longer exists.</p>
+    </div>
+  } @else if (state() === 'forbidden') {
+    <div class="state-panel" role="alert">
+      <mat-icon>lock</mat-icon>
+      <h1 id="details-heading">Access denied</h1>
+      <p>You do not have permission to view this incident.</p>
+    </div>
+  } @else if (state() === 'error') {
+    <div class="state-panel" role="alert">
+      <mat-icon>cloud_off</mat-icon>
+      <h1 id="details-heading">Unable to load incident</h1>
+      <p>Incident details could not be loaded. Please try again.</p>
+      <button mat-flat-button type="button" (click)="retry()">Retry</button>
+    </div>
+  } @else {
+    @if (incident(); as item) {
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">{{ item.displayId }}</p>
+        <h1 id="details-heading">{{ item.title }}</h1>
+      </div>
+      <div class="header-badges" aria-label="Incident status and priority">
+        <mat-chip [class]="'status-' + item.status.toLowerCase()">
+          Status: {{ label(item.status) }}
+        </mat-chip>
+        @if (item.finalPriority || item.aiAnalysis?.suggestedPriority; as priority) {
+          <mat-chip [class]="'priority-' + priority.toLowerCase()">
+            Priority: {{ label(priority) }}
+          </mat-chip>
+        } @else {
+          <span class="not-assessed">Priority: Not assessed</span>
+        }
+      </div>
+    </header>
+
+    <div class="card-grid">
+      <mat-card appearance="outlined" class="wide-card">
+        <mat-card-header><h2 mat-card-title>Incident information</h2></mat-card-header>
+        <mat-card-content>
+          <dl class="facts-grid">
+            <div><dt>Application</dt><dd>{{ label(item.applicationName) }}</dd></div>
+            <div><dt>Environment</dt><dd>{{ label(item.environment) }}</dd></div>
+            <div>
+              <dt>Created</dt>
+              <dd>
+                @if (safeDate(item.createdAt); as createdAt) {
+                  {{ createdAt | date:'medium' }}
+                } @else { Unavailable }
+              </dd>
+            </div>
+            <div>
+              <dt>Updated</dt>
+              <dd>
+                @if (safeDate(item.updatedAt); as updatedAt) {
+                  {{ updatedAt | date:'medium' }}
+                } @else { Unavailable }
+              </dd>
+            </div>
+          </dl>
+          <h3>Description</h3>
+          <p class="long-copy">{{ item.description }}</p>
+          @if (item.errorLogs) {
+            <h3>Error logs</h3>
+            <pre class="logs">{{ item.errorLogs }}</pre>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card appearance="outlined">
+        <mat-card-header><h2 mat-card-title>People and lifecycle</h2></mat-card-header>
+        <mat-card-content>
+          <dl class="stacked-facts">
+            <div>
+              <dt>Created by</dt>
+              <dd>{{ item.createdBy.name }} · {{ role(item.createdBy.role) }}</dd>
+            </div>
+            <div>
+              <dt>Assigned developer</dt>
+              <dd>
+                @if (item.assignedDeveloper; as developer) {
+                  {{ developer.name }} · {{ role(developer.role) }}
+                } @else { Unassigned }
+              </dd>
+            </div>
+            @if (item.assignedAt !== null) {
+              <div>
+                <dt>Assigned</dt>
+                <dd>
+                  @if (safeDate(item.assignedAt); as assignedAt) {
+                    {{ assignedAt | date:'medium' }}
+                  } @else { Unavailable }
+                </dd>
+              </div>
+            }
+            @if (item.resolvedAt !== null) {
+              <div>
+                <dt>Resolved</dt>
+                <dd>
+                  @if (safeDate(item.resolvedAt); as resolvedAt) {
+                    {{ resolvedAt | date:'medium' }}
+                  } @else { Unavailable }
+                </dd>
+              </div>
+            }
+          </dl>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card appearance="outlined">
+        <mat-card-header><h2 mat-card-title>AI analysis</h2></mat-card-header>
+        <mat-card-content>
+          @if (item.aiAnalysis; as analysis) {
+            <p class="advisory">Advisory AI output for human review.</p>
+            <dl class="stacked-facts">
+              <div><dt>Suggested category</dt><dd>{{ label(analysis.suggestedCategory) }}</dd></div>
+              <div><dt>Suggested priority</dt><dd>{{ label(analysis.suggestedPriority) }}</dd></div>
+              <div><dt>Probable root cause</dt><dd class="long-copy">{{ analysis.probableRootCause }}</dd></div>
+              <div><dt>Suggested resolution</dt><dd class="long-copy">{{ analysis.suggestedResolution }}</dd></div>
+              <div><dt>Model</dt><dd>{{ analysis.modelName }}</dd></div>
+              <div>
+                <dt>Generated</dt>
+                <dd>
+                  @if (safeDate(analysis.generatedAt); as generatedAt) {
+                    {{ generatedAt | date:'medium' }}
+                  } @else { Unavailable }
+                </dd>
+              </div>
+            </dl>
+          } @else {
+            <p class="empty-copy">No AI analysis has been generated.</p>
+          }
+        </mat-card-content>
+      </mat-card>
+
+      @if (hasCompleteFinalResolution(item)) {
+        <mat-card appearance="outlined" class="wide-card resolution-card">
+          <mat-card-header><h2 mat-card-title>Final resolution</h2></mat-card-header>
+          <mat-card-content>
+            <p class="authoritative">Human-entered final values are authoritative.</p>
+            <dl class="facts-grid">
+              <div><dt>Final category</dt><dd>{{ item.finalCategory ? label(item.finalCategory) : 'Unavailable' }}</dd></div>
+              <div><dt>Final priority</dt><dd>{{ item.finalPriority ? label(item.finalPriority) : 'Unavailable' }}</dd></div>
+              <div class="full-fact"><dt>Actual root cause</dt><dd class="long-copy">{{ item.actualRootCause || 'Unavailable' }}</dd></div>
+              <div class="full-fact"><dt>Actual resolution</dt><dd class="long-copy">{{ item.actualResolution || 'Unavailable' }}</dd></div>
+              <div>
+                <dt>Resolved</dt>
+                <dd>
+                  @if (safeDate(item.resolvedAt); as resolvedAt) {
+                    {{ resolvedAt | date:'medium' }}
+                  } @else { Unavailable }
+                </dd>
+              </div>
+            </dl>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+    }
+  }
+</section>

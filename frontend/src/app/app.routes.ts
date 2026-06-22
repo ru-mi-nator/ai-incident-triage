@@ -30,6 +30,12 @@ export const routes: Routes = [
         title: 'Create Incident | AI Incident Triage Portal'
       },
       {
+        path: 'incidents/:id',
+        loadComponent: () => import('./features/incidents/incident-details.component')
+          .then(module => module.IncidentDetailsComponent),
+        title: 'Incident Details | AI Incident Triage Portal'
+      },
+      {
         path: 'incidents',
         loadComponent: () => import('./features/incidents/incident-list.component')
           .then(module => module.IncidentListComponent),

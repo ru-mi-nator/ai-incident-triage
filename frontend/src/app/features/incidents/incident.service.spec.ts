@@ -1,7 +1,12 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { CreateIncidentRequest, CreatedIncident, IncidentPage } from './incident.models';
+import {
+  CreateIncidentRequest,
+  CreatedIncident,
+  IncidentDetails,
+  IncidentPage
+} from './incident.models';
 import { IncidentService } from './incident.service';
 
 describe('IncidentService', () => {
@@ -75,6 +80,44 @@ describe('IncidentService', () => {
     expect(httpRequest.request.body).toEqual(request);
     expect(httpRequest.request.headers.has('Authorization')).toBeFalse();
     httpRequest.flush(response);
+    expect(actual).toEqual(response);
+  });
+
+  it('gets a typed incident details response from the correct relative URL', () => {
+    const response: IncidentDetails = {
+      id: 42,
+      displayId: 'INC-0042',
+      title: 'Login API returning 500',
+      description: 'Users cannot log in.',
+      applicationName: 'AUTH_SERVICE',
+      environment: 'PROD',
+      errorLogs: null,
+      status: 'OPEN',
+      createdBy: {
+        id: 1,
+        name: 'Support User',
+        username: 'support1',
+        role: 'SUPPORT_ENGINEER'
+      },
+      assignedDeveloper: null,
+      assignedAt: null,
+      finalCategory: null,
+      finalPriority: null,
+      actualRootCause: null,
+      actualResolution: null,
+      resolvedAt: null,
+      createdAt: '2026-06-21T10:30:00Z',
+      updatedAt: '2026-06-21T10:30:00Z',
+      aiAnalysis: null
+    };
+    let actual: IncidentDetails | undefined;
+
+    service.getIncidentById(42).subscribe(value => actual = value);
+
+    const request = http.expectOne('/api/incidents/42');
+    expect(request.request.method).toBe('GET');
+    expect(request.request.headers.has('Authorization')).toBeFalse();
+    request.flush(response);
     expect(actual).toEqual(response);
   });
 });
