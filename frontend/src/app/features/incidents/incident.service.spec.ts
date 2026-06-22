@@ -5,7 +5,8 @@ import {
   CreateIncidentRequest,
   CreatedIncident,
   IncidentDetails,
-  IncidentPage
+  IncidentPage,
+  ResolveIncidentRequest
 } from './incident.models';
 import { IncidentService } from './incident.service';
 
@@ -119,5 +120,42 @@ describe('IncidentService', () => {
     expect(request.request.headers.has('Authorization')).toBeFalse();
     request.flush(response);
     expect(actual).toEqual(response);
+  });
+
+  it('posts assignment to the correct URL without a body or auth header', () => {
+    service.assignToMe(42).subscribe();
+
+    const request = http.expectOne('/api/incidents/42/assign-to-me');
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toBeNull();
+    expect(request.request.headers.has('Authorization')).toBeFalse();
+    request.flush({});
+  });
+
+  it('posts analysis to the correct URL without a body or auth header', () => {
+    service.analyzeIncident(42).subscribe();
+
+    const request = http.expectOne('/api/incidents/42/analyze');
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toBeNull();
+    expect(request.request.headers.has('Authorization')).toBeFalse();
+    request.flush({});
+  });
+
+  it('posts the exact typed resolution body without an auth header', () => {
+    const body: ResolveIncidentRequest = {
+      finalCategory: 'DATABASE',
+      finalPriority: 'HIGH',
+      actualRootCause: 'Connection pool exhaustion.',
+      actualResolution: 'Closed leaked connections.'
+    };
+
+    service.resolveIncident(42, body).subscribe();
+
+    const request = http.expectOne('/api/incidents/42/resolve');
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual(body);
+    expect(request.request.headers.has('Authorization')).toBeFalse();
+    request.flush({});
   });
 });

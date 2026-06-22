@@ -44,6 +44,53 @@ h1 {
   gap: 0.65rem;
 }
 
+.action-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.15rem 1.25rem;
+  background: #f6fafc;
+  border: 1px solid #d8e8ef;
+  border-radius: 14px;
+}
+
+.action-section h2 {
+  margin: 0;
+}
+
+.action-section p {
+  margin: 0.35rem 0 0;
+  color: #657188;
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.action-buttons button {
+  min-width: 10rem;
+}
+
+.action-buttons mat-spinner {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.action-error {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.9rem 1rem;
+  color: #8a1c16;
+  background: #fff0ee;
+  border: 1px solid #f0c7c2;
+  border-radius: 10px;
+}
+
 .not-assessed {
   align-self: center;
   color: #69768a;
@@ -225,6 +272,19 @@ dd {
 
   .header-badges {
     justify-content: flex-start;
+  }
+
+  .action-section {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .action-buttons {
+    justify-content: stretch;
+  }
+
+  .action-buttons button {
+    flex: 1 1 100%;
   }
 
   .card-grid,

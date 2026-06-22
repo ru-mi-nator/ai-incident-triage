@@ -1,0 +1,68 @@
+:host {
+  display: block;
+}
+
+.dialog-intro {
+  margin-top: 0;
+  color: #657188;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 1rem;
+  width: min(42rem, 76vw);
+  padding-top: 0.25rem;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.form-error {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.9rem 1rem;
+  color: #8a1c16;
+  background: #fff0ee;
+  border: 1px solid #f0c7c2;
+  border-radius: 10px;
+}
+
+mat-dialog-actions {
+  padding: 1rem 1.5rem 1.25rem;
+}
+
+mat-dialog-actions button {
+  min-width: 9rem;
+}
+
+mat-spinner {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+@media (max-width: 650px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+
+  mat-dialog-actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  mat-dialog-actions button {
+    width: 100%;
+  }
+}

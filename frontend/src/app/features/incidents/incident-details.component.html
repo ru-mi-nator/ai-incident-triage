@@ -54,6 +54,67 @@
       </div>
     </header>
 
+    @if (canAssign(item) || canAnalyze(item) || canResolve(item)) {
+      <section class="action-section" aria-labelledby="incident-actions-heading">
+        <div>
+          <h2 id="incident-actions-heading">Incident actions</h2>
+          <p>Available actions reflect your role and the current incident state.</p>
+        </div>
+        <div class="action-buttons">
+          @if (canAssign(item)) {
+            <button
+              mat-flat-button
+              type="button"
+              (click)="assignToMe()"
+              [disabled]="activeAction() !== null"
+              [attr.aria-label]="assigning() ? 'Assigning incident to you' : 'Assign to me'"
+            >
+              @if (assigning()) {
+                <mat-spinner diameter="20" />
+                Assigning...
+              } @else {
+                Assign to me
+              }
+            </button>
+          }
+          @if (canAnalyze(item)) {
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="analyzeIncident()"
+              [disabled]="activeAction() !== null"
+              [attr.aria-label]="analyzing() ? 'Generating AI analysis' : 'Generate AI Analysis'"
+            >
+              @if (analyzing()) {
+                <mat-spinner diameter="20" />
+                Generating analysis...
+              } @else {
+                Generate AI Analysis
+              }
+            </button>
+          }
+          @if (canResolve(item)) {
+            <button
+              mat-flat-button
+              type="button"
+              (click)="openResolveDialog()"
+              [disabled]="activeAction() !== null"
+              [attr.aria-label]="resolving() ? 'Resolution dialog open' : 'Resolve Incident'"
+            >
+              Resolve Incident
+            </button>
+          }
+        </div>
+      </section>
+    }
+
+    @if (actionError(); as message) {
+      <div class="action-error" role="alert">
+        <mat-icon aria-hidden="true">error_outline</mat-icon>
+        <span>{{ message }}</span>
+      </div>
+    }
+
     <div class="card-grid">
       <mat-card appearance="outlined" class="wide-card">
         <mat-card-header><h2 mat-card-title>Incident information</h2></mat-card-header>

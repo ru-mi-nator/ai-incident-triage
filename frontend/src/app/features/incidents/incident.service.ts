@@ -5,7 +5,8 @@ import {
   CreateIncidentRequest,
   CreatedIncident,
   IncidentDetails,
-  IncidentPage
+  IncidentPage,
+  ResolveIncidentRequest
 } from './incident.models';
 
 @Injectable({ providedIn: 'root' })
@@ -27,5 +28,20 @@ export class IncidentService {
 
   getIncidentById(id: number): Observable<IncidentDetails> {
     return this.http.get<IncidentDetails>(`/api/incidents/${id}`);
+  }
+
+  assignToMe(id: number): Observable<IncidentDetails> {
+    return this.http.post<IncidentDetails>(`/api/incidents/${id}/assign-to-me`, null);
+  }
+
+  analyzeIncident(id: number): Observable<IncidentDetails> {
+    return this.http.post<IncidentDetails>(`/api/incidents/${id}/analyze`, null);
+  }
+
+  resolveIncident(
+    id: number,
+    request: ResolveIncidentRequest
+  ): Observable<IncidentDetails> {
+    return this.http.post<IncidentDetails>(`/api/incidents/${id}/resolve`, request);
   }
 }

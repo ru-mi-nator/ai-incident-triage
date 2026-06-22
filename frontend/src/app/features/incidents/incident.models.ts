@@ -51,6 +51,13 @@ export interface CreateIncidentRequest {
   readonly errorLogs: string | null;
 }
 
+export interface ResolveIncidentRequest {
+  readonly finalCategory: IncidentCategory;
+  readonly finalPriority: IncidentPriority;
+  readonly actualRootCause: string;
+  readonly actualResolution: string;
+}
+
 export interface CreatedIncident {
   readonly id: number;
   readonly displayId: string;

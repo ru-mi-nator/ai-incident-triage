@@ -1,0 +1,95 @@
+<h2 mat-dialog-title>Resolve Incident</h2>
+
+<form [formGroup]="resolveForm" (ngSubmit)="submit()" novalidate>
+  <mat-dialog-content>
+    <p id="resolve-dialog-description" class="dialog-intro">
+      Record the final human-reviewed outcome. AI suggestions remain advisory.
+    </p>
+
+    <div class="form-grid">
+      <mat-form-field appearance="outline">
+        <mat-label>Final category</mat-label>
+        <mat-select formControlName="finalCategory">
+          @for (category of categories; track category) {
+            <mat-option [value]="category">{{ label(category) }}</mat-option>
+          }
+        </mat-select>
+        @if (resolveForm.controls.finalCategory.hasError('required')) {
+          <mat-error>Final category is required.</mat-error>
+        } @else if (resolveForm.controls.finalCategory.hasError('server')) {
+          <mat-error>Please review the final category.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Final priority</mat-label>
+        <mat-select formControlName="finalPriority">
+          @for (priority of priorities; track priority) {
+            <mat-option [value]="priority">{{ label(priority) }}</mat-option>
+          }
+        </mat-select>
+        @if (resolveForm.controls.finalPriority.hasError('required')) {
+          <mat-error>Final priority is required.</mat-error>
+        } @else if (resolveForm.controls.finalPriority.hasError('server')) {
+          <mat-error>Please review the final priority.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Actual root cause</mat-label>
+        <textarea matInput formControlName="actualRootCause" rows="6"></textarea>
+        <mat-hint align="end">
+          {{ characterCount(resolveForm.controls.actualRootCause.value) }}/2000
+        </mat-hint>
+        @if (resolveForm.controls.actualRootCause.hasError('required')
+          || resolveForm.controls.actualRootCause.hasError('blank')) {
+          <mat-error>Actual root cause is required and cannot contain only whitespace.</mat-error>
+        } @else if (resolveForm.controls.actualRootCause.hasError('maxlength')) {
+          <mat-error>Actual root cause must not exceed 2000 characters.</mat-error>
+        } @else if (resolveForm.controls.actualRootCause.hasError('server')) {
+          <mat-error>Please review the actual root cause.</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Actual resolution</mat-label>
+        <textarea matInput formControlName="actualResolution" rows="7"></textarea>
+        <mat-hint align="end">
+          {{ characterCount(resolveForm.controls.actualResolution.value) }}/3000
+        </mat-hint>
+        @if (resolveForm.controls.actualResolution.hasError('required')
+          || resolveForm.controls.actualResolution.hasError('blank')) {
+          <mat-error>Actual resolution is required and cannot contain only whitespace.</mat-error>
+        } @else if (resolveForm.controls.actualResolution.hasError('maxlength')) {
+          <mat-error>Actual resolution must not exceed 3000 characters.</mat-error>
+        } @else if (resolveForm.controls.actualResolution.hasError('server')) {
+          <mat-error>Please review the actual resolution.</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    @if (errorMessage(); as message) {
+      <div class="form-error" role="alert">
+        <mat-icon aria-hidden="true">error_outline</mat-icon>
+        <span>{{ message }}</span>
+      </div>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close type="button" [disabled]="submitting()">Cancel</button>
+    <button
+      mat-flat-button
+      type="submit"
+      [disabled]="resolveForm.invalid || submitting()"
+      [attr.aria-label]="submitting() ? 'Resolving incident' : 'Resolve incident'"
+    >
+      @if (submitting()) {
+        <mat-spinner diameter="20" />
+        Resolving...
+      } @else {
+        Resolve Incident
+      }
+    </button>
+  </mat-dialog-actions>
+</form>

@@ -35,7 +35,7 @@ AI recommendations support, but do not replace, developer judgment. Synchronous 
 
 ## MVP Status
 
-The backend MVP is complete. It implements seven workflows: login, incident creation, incident listing, incident details, developer self-assignment, advisory AI analysis, and assigned-developer resolution. The Angular application includes authentication, a protected paginated incident list, Support Engineer incident creation, and read-only incident details with existing AI analysis and final resolution data; assignment, analysis-trigger, and resolution actions remain pending. Live OpenAI provider verification is also pending.
+The backend MVP is complete. It implements seven workflows: login, incident creation, incident listing, incident details, developer self-assignment, advisory AI analysis, and assigned-developer resolution. The Angular application now implements the full core frontend workflow: authentication, a protected paginated incident list, Support Engineer incident creation, incident details, developer assignment, role-aware AI-analysis triggering and display, and assigned-developer resolution. Live OpenAI provider verification is still pending; final polish and end-to-end review remain.
 
 ## Repository Structure
 
@@ -118,10 +118,10 @@ npm start
 
 Open `http://localhost:4200`. The `npm start` command loads `proxy.conf.json`, which forwards relative `/api` requests to `http://localhost:8080`; no browser CORS configuration is required for local development.
 
-The current frontend includes login, session restoration through `sessionStorage`, bearer-token interception, protected routing, a reusable authenticated shell, logout, dashboard navigation, a paginated incident list, Support Engineer-only incident creation with validation and safe API-error handling, and read-only incident details. Existing AI analysis and final resolution values are displayed without action controls. Assignment, analysis triggering, resolution submission, filters, search, charts, and richer dashboards remain pending.
+The current frontend includes login, session restoration through `sessionStorage`, bearer-token interception, protected routing, a reusable authenticated shell, logout, dashboard navigation, a paginated incident list, Support Engineer-only incident creation, and lifecycle-aware incident details. The details page includes developer self-assignment, eligible Support Engineer/developer AI-analysis triggering and display, and a validated assigned-developer resolution dialog. Live OpenAI verification, final polish, and end-to-end review remain pending. Filters, search, charts, and richer dashboards are outside the completed core workflow.
 
 The login screen shows the seeded demo usernames `support1` and `developer1`. Passwords are not prefilled or stored.
 
 ## Implementation Note
 
-The repository currently includes the Spring Boot backend foundation, local PostgreSQL Docker setup, Flyway schema and seeded demo users, JPA entities, Spring Data repositories, JWT authentication, incident creation, paginated incident summary listing, full incident-details retrieval, developer self-assignment, synchronous OpenAI-backed incident analysis, assigned-developer incident resolution, the Angular authentication foundation, Angular incident list and creation flows, and read-only Angular incident details. Automated analysis tests use a mocked project-owned AI client; live OpenAI verification remains pending until a valid local API key is available. Angular assignment, analysis-trigger, and resolution actions, plus editing, metadata, filtering/search, deletion, and asynchronous AI processing remain pending.
+The repository currently includes the Spring Boot backend foundation, local PostgreSQL Docker setup, Flyway schema and seeded demo users, JPA entities, Spring Data repositories, JWT authentication, incident creation, paginated incident summary listing, full incident-details retrieval, developer self-assignment, synchronous OpenAI-backed incident analysis, assigned-developer incident resolution, and the complete core Angular workflow through final resolution. Automated analysis tests use a mocked project-owned AI client; live OpenAI verification remains pending until a valid local API key is available. Editing, metadata, filtering/search, deletion, and asynchronous AI processing remain outside this slice.
