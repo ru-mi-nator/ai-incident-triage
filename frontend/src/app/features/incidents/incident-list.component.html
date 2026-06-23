@@ -5,8 +5,8 @@
       <h1 id="incidents-heading">Incidents</h1>
       <p class="subtitle">Review the latest incidents across applications and environments.</p>
     </div>
-    <button mat-stroked-button type="button" (click)="refresh()" [disabled]="loading()">
-      <mat-icon>refresh</mat-icon>
+    <button class="refresh-button" mat-stroked-button type="button" (click)="refresh()" [disabled]="loading()">
+      <mat-icon aria-hidden="true">refresh</mat-icon>
       Refresh
     </button>
   </header>
@@ -21,14 +21,14 @@
 
     @if (errorMessage(); as message) {
       <div class="state-panel" role="alert">
-        <mat-icon>cloud_off</mat-icon>
+        <mat-icon aria-hidden="true">cloud_off</mat-icon>
         <h2>Unable to load incidents</h2>
         <p>{{ message }}</p>
         <button mat-flat-button type="button" (click)="retry()" [disabled]="loading()">Retry</button>
       </div>
     } @else if (!loading() && incidents().length === 0) {
       <div class="state-panel" role="status" aria-live="polite">
-        <mat-icon>inbox</mat-icon>
+        <mat-icon aria-hidden="true">inbox</mat-icon>
         <h2>No incidents yet</h2>
         <p>Incidents will appear here when they are submitted.</p>
       </div>

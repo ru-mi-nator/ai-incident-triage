@@ -4,17 +4,47 @@
     <h1 id="welcome-heading">Welcome, {{ currentUser.name }}</h1>
     <p class="intro">You are signed in as {{ role() }}.</p>
 
-    <mat-card appearance="outlined">
-      <div class="card-icon"><mat-icon>receipt_long</mat-icon></div>
-      <div>
-        <h2 mat-card-title>Incident workspace</h2>
+    <div class="workflow-grid" aria-label="Incident workflow">
+      <mat-card appearance="outlined">
+        <div class="card-icon" aria-hidden="true"><mat-icon>receipt_long</mat-icon></div>
+        <h2 mat-card-title>Review incidents</h2>
         <mat-card-content>
-          Review paginated incident summaries across applications and environments.
+          Browse incidents across applications and environments.
         </mat-card-content>
         <mat-card-actions>
           <a mat-flat-button routerLink="/incidents">View Incidents</a>
         </mat-card-actions>
-      </div>
-    </mat-card>
+      </mat-card>
+
+      <mat-card appearance="outlined">
+        <div class="card-icon accent-blue" aria-hidden="true">
+          <mat-icon>assignment_ind</mat-icon>
+        </div>
+        <h2 mat-card-title>Assign incidents</h2>
+        <mat-card-content>
+          Take ownership of open incidents and begin investigation.
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card appearance="outlined">
+        <div class="card-icon accent-violet" aria-hidden="true">
+          <mat-icon>auto_awesome</mat-icon>
+        </div>
+        <h2 mat-card-title>AI analysis</h2>
+        <mat-card-content>
+          Generate advisory AI-powered triage suggestions.
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card appearance="outlined">
+        <div class="card-icon accent-green" aria-hidden="true">
+          <mat-icon>task_alt</mat-icon>
+        </div>
+        <h2 mat-card-title>Resolve incidents</h2>
+        <mat-card-content>
+          Record the human-verified root cause and final resolution.
+        </mat-card-content>
+      </mat-card>
+    </div>
   </section>
 }

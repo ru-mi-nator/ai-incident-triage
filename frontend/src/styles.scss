@@ -32,3 +32,19 @@ button,
 input {
   font: inherit;
 }
+
+a[mat-flat-button],
+button[mat-flat-button],
+a[mat-stroked-button],
+button[mat-stroked-button] {
+  min-height: 38px;
+  border-radius: 9px;
+}
+
+a[mat-flat-button]:focus-visible,
+button[mat-flat-button]:focus-visible,
+a[mat-stroked-button]:focus-visible,
+button[mat-stroked-button]:focus-visible {
+  outline: 3px solid #70cce2;
+  outline-offset: 2px;
+}
