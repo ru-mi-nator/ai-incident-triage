@@ -20,12 +20,15 @@ public class OpenAiIncidentTriageClient implements IncidentTriageAiClient {
 
 	private final ChatClient.Builder chatClientBuilder;
 
+	@Value("${ai.enabled:false}")
+	private boolean aiEnabled;
+
 	@Value("${spring.ai.openai.api-key}")
 	private String apiKey;
 
 	@Override
 	public IncidentTriageAiResult analyze(IncidentTriageInput input) {
-		if ("not-configured".equals(apiKey) || apiKey.isBlank()) {
+		if (!aiEnabled || "not-configured".equals(apiKey) || apiKey.isBlank()) {
 			throw new IllegalStateException("AI configuration is unavailable");
 		}
 

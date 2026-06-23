@@ -23,12 +23,16 @@ spring:
     retry:
       max-attempts: 1
     openai:
-      api-key: ${OPENAI_API_KEY:not-configured}
+      base-url: ${GEMINI_BASE_URL:https://generativelanguage.googleapis.com/v1beta/openai}
+      api-key: ${GEMINI_API_KEY:not-configured}
       chat:
+        completions-path: /chat/completions
         options:
-          model: ${OPENAI_MODEL:gpt-4.1-mini}
+          model: ${GEMINI_MODEL:gemini-2.5-flash-lite}
           temperature: 0.1
-          max-completion-tokens: 1200
+
+ai:
+  enabled: ${AI_ENABLED:false}
 
 security:
   jwt:

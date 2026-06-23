@@ -21,7 +21,7 @@ Support Engineers create and monitor incidents. Developers self-assign open inci
 
 - Java 17, Spring Boot, Spring Security, JWT, Spring Data JPA, Flyway
 - PostgreSQL 16
-- Spring AI with OpenAI
+- Spring AI with Google Gemini through Gemini's OpenAI-compatible endpoint
 - Angular 19, Angular Material, SCSS
 - Maven, npm, Karma, Jasmine
 
@@ -31,7 +31,7 @@ The Angular single-page application calls relative `/api` endpoints through the 
 
 ```text
 Angular UI → /api → Spring Boot → PostgreSQL
-                         └──────→ OpenAI (when configured)
+                         └──────→ Gemini Developer API (when enabled and configured)
 ```
 
 ## Roles and lifecycle
@@ -63,7 +63,9 @@ Incidents cannot currently be edited, deleted, or reopened through the applicati
 
 AI analysis is synchronous and advisory. The assigned developer remains responsible for the final resolution. Automated tests use a mocked project-owned AI client.
 
-Live OpenAI verification is pending and requires a valid local `OPENAI_API_KEY`. When no usable provider configuration is available, the API returns a safe unavailable response and leaves the incident unchanged. A local provider such as Ollama may be considered as a future enhancement; it is not implemented.
+The active target provider is the Gemini Developer API, accessed through Gemini's OpenAI-compatible endpoint. The existing Spring AI OpenAI-compatible starter and adapter are intentionally retained; the configurable default model is `gemini-2.5-flash-lite`.
+
+AI is disabled by default. Set `AI_ENABLED=true` and provide a valid local `GEMINI_API_KEY` to enable it. When AI is disabled or no usable key is configured, the API returns a safe unavailable response and leaves the incident unchanged. Live Gemini analysis has not yet been verified. Use only fictional demo incident data. Free-tier availability, quotas, and rate limits are controlled by Google. RAG is not implemented.
 
 ## Local prerequisites
 
@@ -89,8 +91,10 @@ Required variables:
 | `POSTGRES_PASSWORD` | Database password |
 | `POSTGRES_PORT` | Host PostgreSQL port |
 | `JWT_SECRET` | Base64-encoded JWT secret of at least 32 random bytes |
-| `OPENAI_API_KEY` | Optional for live AI analysis |
-| `OPENAI_MODEL` | OpenAI model name |
+| `AI_ENABLED` | Enables live AI analysis when set to `true`; defaults to `false` |
+| `GEMINI_API_KEY` | Gemini Developer API key; may be blank while AI is disabled |
+| `GEMINI_MODEL` | Gemini model name; defaults to `gemini-2.5-flash-lite` |
+| `GEMINI_BASE_URL` | Gemini OpenAI-compatible base URL |
 
 Do not commit `.env` or real secrets.
 
@@ -174,8 +178,9 @@ See [API Design](docs/api-design.md), [Database Design](docs/database-design.md)
 
 ## Current limitations
 
-- Live OpenAI provider verification is pending.
+- Live Gemini provider verification is pending.
 - AI analysis runs synchronously.
+- RAG is not implemented.
 - No incident editing, deletion, reopening, search, filters, dashboards, charts, notifications, or uploads.
 - No registration, refresh tokens, Swagger, circuit breaker, or production deployment setup.
 - This repository is an MVP and does not claim production readiness.
