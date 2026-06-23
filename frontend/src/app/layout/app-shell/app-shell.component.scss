@@ -68,17 +68,26 @@ mat-toolbar {
   font-size: 0.72rem;
 }
 
-.logout-button {
+mat-toolbar .logout-button.mat-mdc-outlined-button {
+  --mdc-outlined-button-label-text-color: #ffffff;
+  --mdc-outlined-button-outline-color: rgba(255, 255, 255, 0.6);
+
   min-width: auto;
   height: 38px;
   padding-inline: 0.75rem;
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.5);
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
   border-radius: 9px;
 }
 
-.logout-button mat-icon {
-  color: #fff;
+mat-toolbar .logout-button .logout-label,
+mat-toolbar .logout-button mat-icon {
+  color: #ffffff !important;
+}
+
+mat-toolbar .logout-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .primary-nav {
